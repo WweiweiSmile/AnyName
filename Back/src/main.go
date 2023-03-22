@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/labstack/echo"
 )
@@ -53,7 +54,8 @@ func getVideo(c echo.Context) error {
 	fileName := c.Param("fileName")
 	isPrivate := c.Param("isPrivate")
 	var filePrePath = ""
-	fmt.Print("fileName->", fileName)
+	currentTime := time.Now()
+	fmt.Println("fileName:", fileName, "， 当前时间：", currentTime.Format("2006-01-02 15:04:05"))
 	if isPrivate == "true" {
 		filePrePath = "E:\\FFFF00/"
 	} else {

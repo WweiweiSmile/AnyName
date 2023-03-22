@@ -12,7 +12,7 @@ export const useFileUplaod = () => {
     async (data: { file: File; isPrivate: string }) => {
       const formData = new FormData();
       formData.append("file", data.file);
-      formData.append("private", data.isPrivate);
+      formData.append("isPrivate", data.isPrivate);
       try {
         const res = await axios.post("/api/savefile", formData);
         return res;
