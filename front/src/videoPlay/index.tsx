@@ -1,112 +1,115 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Video from "react-video-renderer";
 import { Button, Col, Row, Space } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import VideoProgress from "./children/Progress";
 import "./index.scss";
-import { Progress } from "antd";
 type VideoPlayPropsType = {
+  open: boolean;
+  onClose: VoidFunction;
   src: string;
-  width: string;
-  height: string;
 };
 const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
-  const { src, width, height } = props;
-  const progressRef = useRef<HTMLDivElement>(null);
+  const { src, open, onClose } = props;
+  const [toolbarVisible, setToolbarVisible] = useState(false);
+  const timouter = useRef<NodeJS.Timeout[]>([]);
   return (
-    <Video src={src}>
-      {(video, state, actions) => (
-        <div className={`videoPlay`}>
-          <Row justify={"center"}>
-            <Col style={{ height: "calc(100vh - 50px) " }}>{video}</Col>
-          </Row>
-          <div
-            style={{
-              cursor: "pointer",
-              position: "absolute",
-              bottom: 0,
-              zIndex: 999,
-              width: "calc(100% - 40px) ",
-            }}
-          >
+    <>
+      {open && (
+        <Video src={src}>
+          {(video, state, actions) => (
             <div
-              ref={progressRef}
-              onClick={(e) => {
-                // 鼠标位置
-                const { clientX } = e;
-                // 元素位置
-                const { x } = (e?.target as any)?.getBoundingClientRect();
-                const inner = progressRef.current?.getElementsByClassName(
-                  "ant-progress-inner"
-                )[0] as any;
-                // 目标元素宽度
-                const width = inner?.clientWidth;
-
-                const percent =
-                  clientX - x > width
-                    ? 100
-                    : Number(((clientX - x) / width).toFixed(2));
-                actions.navigate(percent * state?.duration);
+              className={`videoPlay`}
+              id={"videoPlayer"}
+              onMouseDown={() => actions.setPlaybackSpeed(2)}
+              onMouseUp={() => actions.setPlaybackSpeed(1)}
+              onTouchStart={() => actions.setPlaybackSpeed(2)}
+              onTouchEnd={() => actions.setPlaybackSpeed(1)}
+              onClick={() => {
+                timouter?.current?.push(
+                  setTimeout(() => setToolbarVisible(!toolbarVisible), 300)
+                );
+              }}
+              onDoubleClick={() => {
+                if (timouter?.current) {
+                  timouter?.current?.map((item) => clearTimeout(item));
+                  timouter.current = [];
+                }
+                state.status === "paused" ? actions.play() : actions.pause();
               }}
             >
-              <Row justify={"center"}>
-                <Col>
-                  <span>{state.currentTime.toFixed(2)}秒</span>
-                </Col>
-                <Col flex={1}>
-                  <Progress
-                    showInfo={false}
-                    percent={Number(
-                      ((state.currentTime / state.duration) * 100).toFixed(2)
-                    )}
+              {video}
+              <div
+                className="topToolbar"
+                onMouseEnter={() => setToolbarVisible(true)}
+                onMouseLeave={() => setToolbarVisible(false)}
+                style={{ opacity: Number(toolbarVisible) }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <Space>
+                  <ArrowLeftOutlined
+                    style={{ color: "white", fontSize: "32px" }}
+                    onClick={onClose}
                   />
-                </Col>
-                <Col>
-                  <span>{state.duration.toFixed(2)}秒</span>
-                </Col>
-              </Row>
+                </Space>
+              </div>
+              <div
+                className="bottomToolbarContainer"
+                onMouseEnter={() => setToolbarVisible(true)}
+                onMouseLeave={() => setToolbarVisible(false)}
+                style={{ opacity: Number(toolbarVisible) }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                {
+                  <div className="bottomToolbar">
+                    <VideoProgress
+                      actions={actions}
+                      state={state}
+                    ></VideoProgress>
+                    <Row justify={"center"}>
+                      <Space>
+                        <Button onClick={actions.play}>Play</Button>
+                        <Button onClick={actions.pause}>Pause</Button>
+                        <Button
+                          onClick={() => {
+                            actions.pause();
+                            actions.navigate(state?.currentTime - 1 / 60);
+                          }}
+                        >
+                          上一帧
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            actions.pause();
+                            actions.navigate(state?.currentTime + 1 / 60);
+                          }}
+                        >
+                          下一帧
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            const el = document.getElementById("videoPlayer");
+                            el?.requestFullscreen();
+                          }}
+                        >
+                          全屏
+                        </Button>
+                      </Space>
+                    </Row>
+                  </div>
+                }
+              </div>
             </div>
-            <Row justify={"center"}>
-              <Col>
-                <Button onClick={actions.play}>Play</Button>
-              </Col>
-              <Col>
-                <Button onClick={actions.pause}>Pause</Button>
-              </Col>
-              <Col>
-                <Button
-                  onClick={() => {
-                    console.log(state?.currentTime);
-                    actions.pause();
-                    actions.navigate(state?.currentTime - 1 / 60);
-                  }}
-                >
-                  上一帧
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  onClick={() => {
-                    console.log(state?.currentTime);
-                    actions.pause();
-                    actions.navigate(state?.currentTime + 1 / 60);
-                  }}
-                >
-                  下一帧
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  onClick={() => {
-                    actions.requestFullscreen();
-                  }}
-                >
-                  全屏
-                </Button>
-              </Col>
-            </Row>
-          </div>
-        </div>
+          )}
+        </Video>
       )}
-    </Video>
+    </>
   );
 };
 

@@ -1,4 +1,3 @@
-import "./App.css";
 import { Button, Input, Row, Col } from "antd";
 import FileUpload from "./FileUpload/index.tsx";
 import { useState } from "react";

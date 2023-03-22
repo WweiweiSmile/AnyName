@@ -180,19 +180,11 @@ const FileUpload: React.FC<{
             );
           })}
       </Row>
-      <Modal
+      <VideoPlay
         open={videoPlayModal}
-        onCancel={() => setVideoPlayModal(false)}
-        width={"100%"}
-        destroyOnClose
-        style={{
-          width: "100vw",
-          height: "100vh",
-        }}
-        footer={null}
-      >
-        <VideoPlay src={videoSrc} width={"100%"} height={"100vh"}></VideoPlay>
-      </Modal>
+        onClose={() => setVideoPlayModal(false)}
+        src={videoSrc}
+      ></VideoPlay>
     </>
   );
 };
