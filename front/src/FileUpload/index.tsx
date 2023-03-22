@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Input, message, Modal, Upload } from "antd";
+import { message, Upload } from "antd";
 import { Col, Row, Button, Card, Typography } from "antd";
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-  EyeOutlined,
-  ArrowDownOutlined,
-} from "@ant-design/icons";
+import { EyeOutlined } from "@ant-design/icons";
 import { UploadFile } from "antd/es/upload";
-import router from "react-router";
 import { useFileUplaod, get, useGetFileInfos } from "../apis/file";
 import VideoPlay from "../videoPlay";
 const { Meta } = Card;
-const { Title, Text } = Typography;
+const { Text } = Typography;
 const getSizeSuffix = (number: number) => {
   const suffix: string[] = ["B", "MB", "GB", "TB", "PB"];
   const size: number[] = [1, 1024, 1024, 1024, 1024];
@@ -146,25 +139,8 @@ const FileUpload: React.FC<{
                             isPrivate ? "true" : "false"
                           }`
                         );
-                        // window.open(
-                        //   `${locationStr}/video/${fileInfo?.name}/${
-                        //     isPrivate ? "true" : "false"
-                        //   }`
-                        // );
                       }}
                     />,
-                    // <a
-                    //   href={`${locationStr}/video/${fileInfo?.name}/${
-                    //     isPrivate ? "true" : "false"
-                    //   }`}
-                    //   download={fileInfo?.name}
-                    // >
-                    //   <ArrowDownOutlined />
-                    // </a>,
-
-                    // <SettingOutlined key="setting" />,
-                    // <EditOutlined key="edit" />,
-                    // <EllipsisOutlined key="ellipsis" />,
                   ]}
                 >
                   <Meta

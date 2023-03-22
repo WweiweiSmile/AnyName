@@ -59,7 +59,7 @@ export const useGetFileInfos = () => {
 export const useGetAuth = () => {
   return useRequest(
     async (password: string) => {
-      const res = await axios.get<string>(
+      const res = await axios.get<string | number>(
         "/api/auth/" + `${password || "not"}`
       );
       return res.data;

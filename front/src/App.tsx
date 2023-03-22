@@ -1,24 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import { Button, Input, Row, Col } from "antd";
+import FileUpload from "./FileUpload";
+import { useState } from "react";
+import { useMemo } from "react";
+import { useGetAuth } from "./apis/file";
 function App() {
+  const [password, setPassword] = useState("");
+  const { data, runAsync: getAuthRun } = useGetAuth();
+  const content = useMemo(() => {
+    return data === 200 ? (
+      <FileUpload isPrivate={true}></FileUpload>
+    ) : data === 201 ? (
+      <FileUpload isPrivate={false}></FileUpload>
+    ) : (
+      ""
+    );
+  }, [data]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Row justify={"center"} align={"middle"}>
+        <Col>输入暗号：</Col>
+        <Col xs={12}>
+          <Input onChange={(e) => setPassword(e?.target?.value)}></Input>
+        </Col>
+        <Button onClick={() => getAuthRun(password)}>确认</Button>
+      </Row>
+      {content}
     </div>
   );
 }
