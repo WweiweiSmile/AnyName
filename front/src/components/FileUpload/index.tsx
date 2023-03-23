@@ -119,7 +119,7 @@ const FileUpload: React.FC = (props) => {
               imgFileSplit?.slice(0, imgFileSplit?.length - 1).join(".") +
               ".png";
             const imgUrl = pngIsExist[fileName]
-              ? `${locationStr}/video/${fileName}`
+              ? `${locationStr}/video/${fileName}/${isPrivate}`
               : "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png";
             return (
               <Col xs={12} xl={6} xxl={4}>
