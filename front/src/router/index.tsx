@@ -1,15 +1,21 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouteObject } from "react-router-dom";
 import App from "../App";
-const routes = [
+import Login from "../components/Login";
+import VideoPlay from "../components/videoPlay";
+import FileUpload from "../components/FileUpload";
+import Home from "../components/Home";
+const routes: RouteObject[] = [
   {
     path: "/",
-    element: <App></App>,
+    element: <Home />,
   },
   {
-    path: "videoPlay:user",
+    path: "/videoPlay",
+    element: <FileUpload />,
   },
   {
-    path: "login",
+    path: "/login",
+    element: <Login />,
   },
 ];
 const router = createBrowserRouter(routes);

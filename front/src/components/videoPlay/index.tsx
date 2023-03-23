@@ -16,7 +16,7 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
   return (
     <>
       {open && (
-        <Video src={src} autoPlay={true}>
+        <Video src={src} autoPlay={true} >
           {(video, state, actions) => (
             <div
               className={`videoPlay`}

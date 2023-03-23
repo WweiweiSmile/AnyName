@@ -56,10 +56,11 @@ export const useGetFileInfos = () => {
  * 验证权限
  * @returns
  */
+export type AuthResponeStatus = 200 | 201 | 400;
 export const useGetAuth = () => {
   return useRequest(
     async (password: string) => {
-      const res = await axios.get<string | number>(
+      const res = await axios.get<AuthResponeStatus>(
         "/api/auth/" + `${password || "not"}`
       );
       return res.data;

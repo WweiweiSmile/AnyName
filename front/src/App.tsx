@@ -1,31 +1,15 @@
-import { Button, Input, Row, Col } from "antd";
-import FileUpload from "./FileUpload";
+import { useLocalStorageState } from "ahooks";
 import { useState } from "react";
-import { useMemo } from "react";
-import { useGetAuth } from "./apis/file";
+import Home from "./components/Home";
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
+import WithAuth from "./hooks/auth";
 function App() {
-  const [password, setPassword] = useState("");
-  const { data, runAsync: getAuthRun } = useGetAuth();
-  const content = useMemo(() => {
-    return data === 200 ? (
-      <FileUpload isPrivate={true}></FileUpload>
-    ) : data === 201 ? (
-      <FileUpload isPrivate={false}></FileUpload>
-    ) : (
-      ""
-    );
-  }, [data]);
-
   return (
     <div className="App">
-      <Row justify={"center"} align={"middle"}>
-        <Col>输入暗号：</Col>
-        <Col xs={12}>
-          <Input onChange={(e) => setPassword(e?.target?.value)}></Input>
-        </Col>
-        <Button onClick={() => getAuthRun(password)}>确认</Button>
-      </Row>
-      {content}
+      <WithAuth>
+        <RouterProvider router={router} />
+      </WithAuth>
     </div>
   );
 }

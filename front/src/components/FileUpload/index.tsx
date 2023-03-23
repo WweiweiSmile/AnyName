@@ -3,8 +3,10 @@ import { message, Upload } from "antd";
 import { Col, Row, Button, Card, Typography } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { UploadFile } from "antd/es/upload";
-import { useFileUplaod, get, useGetFileInfos } from "../apis/file";
+import { useFileUplaod, get, useGetFileInfos } from "../../apis/file";
 import VideoPlay from "../videoPlay";
+import { useLocalStorageState } from "ahooks";
+import { _Auth } from "../Login";
 const { Meta } = Card;
 const { Text } = Typography;
 const getSizeSuffix = (number: number) => {
@@ -22,10 +24,9 @@ const getSizeSuffix = (number: number) => {
   return str;
 };
 
-const FileUpload: React.FC<{
-  isPrivate: boolean;
-}> = (props) => {
-  const { isPrivate } = props;
+const FileUpload: React.FC = (props) => {
+  const [local, setLocal] = useLocalStorageState<_Auth>("_auth");
+  const isPrivate = local.auth === "private";
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploadFileList, setUploadFileList] = useState<UploadFile[]>([]);
   const { runAsync: fileUPloadRun } = useFileUplaod();
