@@ -18,7 +18,11 @@ export type AuthContextType = {
   logout: VoidFunction;
 };
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType>({
+  auth: "logout",
+  logout: () => {},
+  setAuth: (auth) => {},
+});
 export const useAuthContext = () => useContext(AuthContext);
 
 type WithAuthProps = {
@@ -30,8 +34,8 @@ const WithAuth: React.FC<WithAuthProps> = ({ children }) => {
   // 如果没有权限,并且不是登陆页面, 跳转到 登陆页面
   useEffect(() => {
     if (
-      local.auth !== "private" &&
-      local.auth !== "public" &&
+      local?.auth !== "private" &&
+      local?.auth !== "public" &&
       window.location.pathname !== "/login"
     ) {
       window.location.href = "/login";
@@ -55,7 +59,7 @@ const WithAuth: React.FC<WithAuthProps> = ({ children }) => {
     auth === "private" ||
     auth === "public" ||
     window.location.pathname === "/login";
-    
+
   return (
     <AuthContext.Provider value={authValue}>
       {visible && children}
