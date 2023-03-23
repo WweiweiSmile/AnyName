@@ -19,8 +19,6 @@ const Login: React.FC = () => {
   const loginFn = async (pwd: string) => {
     const res: AuthResponeStatus = await getAuthRun(pwd);
     const auth = res === 200 ? "private" : res === 201 ? "public" : "";
-    console.log("res->res", "auth->", auth);
-
     if (auth) {
       setLocal({ auth });
       message.success("确认过眼神，你是对的人~~~~~~~");
@@ -31,16 +29,6 @@ const Login: React.FC = () => {
     }
     message.error("连这都不知道？多捞哟！");
   };
-
-  // const content = useMemo(() => {
-  //   return data === 200 ? (
-  //     <FileUpload isPrivate={true}></FileUpload>
-  //   ) : data === 201 ? (
-  //     <FileUpload isPrivate={false}></FileUpload>
-  //   ) : (
-  //     ""
-  //   );
-  // }, [data]);
 
   return (
     <div className="App">

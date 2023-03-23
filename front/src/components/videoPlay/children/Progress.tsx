@@ -28,8 +28,6 @@ const VideoProgress: React.FC<VideoProgressProps> = (props) => {
     actions.navigate(percent * state?.duration);
   };
   dayjs.extend(duration);
-  console.log("state->", state);
-
   // 进度时间
   const progressTime = dayjs
     .duration(state.currentTime * 1000)

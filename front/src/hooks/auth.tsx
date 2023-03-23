@@ -55,9 +55,7 @@ const WithAuth: React.FC<WithAuthProps> = ({ children }) => {
     auth === "private" ||
     auth === "public" ||
     window.location.pathname === "/login";
-
-  console.log("visible->", visible);
-
+    
   return (
     <AuthContext.Provider value={authValue}>
       {visible && children}

@@ -39,8 +39,6 @@ const FileUpload: React.FC = (props) => {
   const pngIsExist: Record<string, boolean> = {};
 
   const uploadFileRun = async () => {
-    console.log("fileList->", fileList);
-
     if (fileList.length === 0) return;
     const [file, ...newFileList] = fileList;
     const fileName = file?.name;
@@ -87,7 +85,6 @@ const FileUpload: React.FC = (props) => {
           <Upload
             fileList={fileList}
             onRemove={(file) => {
-              console.log("file->", file);
               setFileList(
                 fileList?.filter((item) => {
                   return file.name != item.name;
@@ -97,7 +94,6 @@ const FileUpload: React.FC = (props) => {
             multiple
             beforeUpload={async (file, files) => {
               const fileName = file?.name;
-              console.log("file->", file, "fileList->", fileList);
               setFileList([...fileList, ...files]);
             }}
           >
