@@ -4,19 +4,29 @@ import { Button, Col, Row, Space } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import VideoProgress from "./children/Progress";
 import "./index.scss";
+import { useParams } from "react-router-dom";
+import { useLocalStorageState } from "ahooks";
+import { _Auth } from "../Login";
 type VideoPlayPropsType = {
   open: boolean;
   onClose: VoidFunction;
   src: string;
 };
 const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
-  const { src, open, onClose } = props;
+  const { open, onClose } = props;
   const [toolbarVisible, setToolbarVisible] = useState(false);
+  const { fileName } = useParams();
+  const [state] = useLocalStorageState<_Auth>("_auth");
   const timouter = useRef<NodeJS.Timeout[]>([]);
+  const locationStr =
+    window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8096";
+  const src = `${locationStr}/video/${fileName}/${
+    state.auth === "private" ? "true" : "false"
+  }`;
   return (
     <>
       {open && (
-        <Video src={src} autoPlay={true} >
+        <Video src={src || ""} autoPlay={true}>
           {(video, state, actions) => (
             <div
               className={`videoPlay`}

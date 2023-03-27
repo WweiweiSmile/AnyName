@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { message, Upload } from "antd";
+import { message, Popover, Space, Upload } from "antd";
 import { Col, Row, Button, Card, Typography } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { UploadFile } from "antd/es/upload";
 import { useFileUplaod, get, useGetFileInfos } from "../../apis/file";
-import VideoPlay from "../videoPlay";
 import { useLocalStorageState } from "ahooks";
 import { _Auth } from "../Login";
+import { useNavigate } from "react-router-dom";
 const { Meta } = Card;
 const { Text } = Typography;
 const getSizeSuffix = (number: number) => {
@@ -28,11 +28,9 @@ const FileUpload: React.FC = (props) => {
   const [local, setLocal] = useLocalStorageState<_Auth>("_auth");
   const isPrivate = local.auth === "private";
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [uploadFileList, setUploadFileList] = useState<UploadFile[]>([]);
+  const navigate = useNavigate();
   const { runAsync: fileUPloadRun } = useFileUplaod();
   const { data: fileInfos, runAsync: fileInfosRun } = useGetFileInfos();
-  const [videoPlayModal, setVideoPlayModal] = useState(false);
-  const [videoSrc, setVideoSrc] = useState("");
   const [startUpload, setStartUpload] = useState<object>();
   const locationStr =
     window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8096";
@@ -65,6 +63,9 @@ const FileUpload: React.FC = (props) => {
   };
 
   useEffect(() => {
+    console.log("渲染了-");
+  }, []);
+  useEffect(() => {
     uploadFileRun();
   }, [startUpload]);
   useEffect(() => {
@@ -72,16 +73,8 @@ const FileUpload: React.FC = (props) => {
   }, [isPrivate]);
   return (
     <>
-      <Row justify={"center"}>
+      <Row justify={"center"} gutter={[20, 20]}>
         <Col>
-          <Button
-            disabled={!(fileList.length > 0)}
-            onClick={() => uploadFileRun()}
-          >
-            上传文件
-          </Button>
-        </Col>
-        <Col span={24}>
           <Upload
             fileList={fileList}
             onRemove={(file) => {
@@ -99,6 +92,27 @@ const FileUpload: React.FC = (props) => {
           >
             <Button>添加文件</Button>{" "}
           </Upload>
+        </Col>
+        <Col>
+          <Button
+            disabled={!(fileList.length > 0)}
+            onClick={() => uploadFileRun()}
+          >
+            上传文件
+          </Button>
+        </Col>
+        <Col>
+          <Popover
+            title={undefined}
+            content={
+              <Space>
+                <Button>{"新增文件"}</Button>
+                <Button>{"新增文件夹"}</Button>
+              </Space>
+            }
+          >
+            <Button>{"新增文件夹"}</Button>
+          </Popover>
         </Col>
       </Row>
       <Row style={{ width: "100%" }} gutter={[10, 20]} justify={"space-around"}>
@@ -130,12 +144,7 @@ const FileUpload: React.FC = (props) => {
                     <EyeOutlined
                       key={"view"}
                       onClick={() => {
-                        setVideoPlayModal(true);
-                        setVideoSrc(
-                          `${locationStr}/video/${fileInfo?.name}/${
-                            isPrivate ? "true" : "false"
-                          }`
-                        );
+                        navigate(`/videoPlay/${fileInfo?.name}`);
                       }}
                     />,
                   ]}
@@ -153,11 +162,6 @@ const FileUpload: React.FC = (props) => {
             );
           })}
       </Row>
-      <VideoPlay
-        open={videoPlayModal}
-        onClose={() => setVideoPlayModal(false)}
-        src={videoSrc}
-      ></VideoPlay>
     </>
   );
 };

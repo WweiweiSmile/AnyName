@@ -1,18 +1,21 @@
 import { Button, Col, Row } from "antd";
 import { Content } from "antd/es/layout/layout";
-import React from "react";
+import React, { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../hooks/auth";
+import { useOutlet } from "react-router-dom";
+
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuthContext()!;
+  const outlet = useOutlet();
   return (
     <Content style={{ width: "90%", margin: "auto" }}>
       <Row align={"middle"} justify={"center"} gutter={[20, 20]}>
         <Col>
           <Button
             onClick={() => {
-              navigate("/videoPlay");
+              navigate("/fileList");
             }}
           >
             视频页面
@@ -37,6 +40,7 @@ const Home: React.FC = () => {
           </Button>
         </Col>
       </Row>
+      {outlet}
     </Content>
   );
 };

@@ -2,17 +2,30 @@ import { createBrowserRouter, RouteObject } from "react-router-dom";
 import App from "../App";
 import Login from "../components/Login";
 import VideoPlay from "../components/videoPlay";
-import FileUpload from "../components/FileUpload";
+import FileUpload from "../components/FileList";
 import Home from "../components/Home";
+import CacheComponent from "../components/Cache/CacheComponent";
 const routes: RouteObject[] = [
   {
     path: "/",
-    element: <Home />,
+    children: [
+      {
+        path: "home",
+        element: <Home />,
+      },
+      {
+        path: "fileList",
+        element: <FileUpload />,
+      },
+      {
+        path: "videoPlay/:fileName",
+        element: (
+          <VideoPlay open={true} onClose={() => {}} src={""}></VideoPlay>
+        ),
+      },
+    ],
   },
-  {
-    path: "/videoPlay",
-    element: <FileUpload />,
-  },
+
   {
     path: "/login",
     element: <Login />,
