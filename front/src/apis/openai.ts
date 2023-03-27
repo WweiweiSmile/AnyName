@@ -2,7 +2,7 @@ import { useRequest } from "ahooks";
 import { Configuration, OpenAIApi } from "openai";
 
 const config = new Configuration({
-  apiKey: "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",
+  apiKey: "",
 });
 
 const oepnai = new OpenAIApi(config);
