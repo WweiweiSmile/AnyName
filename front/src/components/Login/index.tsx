@@ -23,7 +23,7 @@ const Login: React.FC = () => {
       setLocal({ auth });
       message.success("确认过眼神，你是对的人~~~~~~~");
       setTimeout(() => {
-        navigate("/");
+        navigate("/home");
       });
       return;
     }

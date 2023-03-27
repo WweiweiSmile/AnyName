@@ -5,6 +5,7 @@ import VideoPlay from "../components/videoPlay";
 import FileUpload from "../components/FileList";
 import Home from "../components/Home";
 import CacheComponent from "../components/Cache/CacheComponent";
+import OpenAi from "../components/openai";
 const routes: RouteObject[] = [
   {
     path: "/",
@@ -22,6 +23,10 @@ const routes: RouteObject[] = [
         element: (
           <VideoPlay open={true} onClose={() => {}} src={""}></VideoPlay>
         ),
+      },
+      {
+        path: "openai",
+        element: <OpenAi></OpenAi>,
       },
     ],
   },
