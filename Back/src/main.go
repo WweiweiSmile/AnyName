@@ -96,7 +96,7 @@ func openaiHanddle(c echo.Context) error {
 	json.Unmarshal([]byte(string(body)), &content)
 	fmt.Println("文本内容：", content)
 
-	client := openaigo.NewClient("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")
+	client := openaigo.NewClient("")
 
 	// 代理请求到本地clash上
 	proxy := func(_ *http.Request) (*url.URL, error) {
