@@ -1,14 +1,19 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"time"
 
 	"github.com/labstack/echo"
+	openaigo "github.com/otiai10/openaigo"
 )
 
 // 上传文件
@@ -80,6 +85,40 @@ func auth(c echo.Context) error {
 	return c.String(http.StatusOK, value)
 }
 
+type OpenAiContent struct {
+	Text string `json:"text"`
+}
+
+// 代理 处理函数
+func openaiHanddle(c echo.Context) error {
+	body, _ := ioutil.ReadAll(c.Request().Body)
+	var content OpenAiContent
+	json.Unmarshal([]byte(string(body)), &content)
+	fmt.Println("文本内容：", content)
+
+	client := openaigo.NewClient("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")
+
+	// 代理请求到本地clash上
+	proxy := func(_ *http.Request) (*url.URL, error) {
+		return url.Parse("http://127.0.0.1:7890")
+	}
+	transport := &http.Transport{Proxy: proxy}
+	client.HTTPClient = &http.Client{Transport: transport}
+
+	// 发送请求
+	request := openaigo.ChatCompletionRequestBody{
+		Model: "gpt-3.5-turbo",
+		Messages: []openaigo.ChatMessage{
+			{Role: "user", Content: content.Text},
+		},
+	}
+	ctx := context.Background()
+	response, err := client.Chat(ctx, request)
+
+	fmt.Println(response, err)
+	return c.String(http.StatusOK, response.Choices[0].Message.Content)
+}
+
 type FileInfo struct {
 	Name       string `json:"name" xml:"name"`             // base name of the file
 	Size       int64  `json:"size" xml:"size"`             // length in bytes for regular files; system-dependent for others
@@ -88,6 +127,17 @@ type FileInfo struct {
 	IsDir      bool   `json:"isDir" xml:"isDir"`           // abbreviation for Mode().IsDir()
 }
 
+func ReverseProxy(target string) echo.MiddlewareFunc {
+	url, _ := url.Parse(target)
+	proxy := httputil.NewSingleHostReverseProxy(url)
+
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			proxy.ServeHTTP(c.Response().Writer, c.Request())
+			return nil
+		}
+	}
+}
 func main() {
 	e := echo.New()
 
@@ -122,6 +172,9 @@ func main() {
 
 	// auth
 	e.GET("/api/auth/:password", auth)
+
+	// openai接口代理
+	e.POST("/api/openai", openaiHanddle)
 
 	e.Logger.Fatal(e.Start(":8096"))
 }

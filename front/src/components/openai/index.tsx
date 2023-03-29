@@ -20,6 +20,7 @@ const OpenAi: React.FC = () => {
       text: "我是chat，可以随便问我问题！目前不支持上下文",
     },
   ]);
+
   // 获取chatgpt答案 hook
   const { runAsync: getAnswerRun, loading } = useGetAnswer();
   // 获取chatgpt答案 函数
@@ -27,6 +28,7 @@ const OpenAi: React.FC = () => {
     const result = await getAnswerRun(questionText);
     setQuestions([...questions, { text: questionText }]);
     setQuestionText("");
+
     if (result !== "未知错误") {
       setAnswers([...answers, { text: result! }]);
     } else {
