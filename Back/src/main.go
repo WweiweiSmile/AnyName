@@ -1,30 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"time"
-
 	"Back/src/components/auth"
 	"Back/src/components/openai"
 	"Back/src/components/videoplay"
 
 	"github.com/labstack/echo"
 )
-
-// 获取视频
-func getVideo(c echo.Context) error {
-	fileName := c.Param("fileName")
-	isPrivate := c.Param("isPrivate")
-	var filePrePath = ""
-	currentTime := time.Now()
-	fmt.Println("fileName:", fileName, "， 当前时间：", currentTime.Format("2006-01-02 15:04:05"))
-	if isPrivate == "true" {
-		filePrePath = "E:\\FFFF00/"
-	} else {
-		filePrePath = "E:\\Heaven/"
-	}
-	return c.File(filePrePath + fileName)
-}
 
 func main() {
 	e := echo.New()

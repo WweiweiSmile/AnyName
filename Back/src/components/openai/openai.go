@@ -9,8 +9,7 @@ import (
 	"net/url"
 
 	"github.com/labstack/echo"
-
-	"github.com/otiai10/openaigo"
+	"github.com/sashabaranov/go-openai"
 )
 
 type OpenAiContent struct {
@@ -23,26 +22,36 @@ func OpenaiHanddle(c echo.Context) error {
 	var content OpenAiContent
 	json.Unmarshal([]byte(string(body)), &content)
 
-	client := openaigo.NewClient("")
-
-	// 代理请求到本地clash上
-	proxy := func(_ *http.Request) (*url.URL, error) {
-		return url.Parse("http://127.0.0.1:7890")
+	// 添加代理
+	config := openai.DefaultConfig("")
+	proxyUrl, err := url.Parse("http://127.0.0.1:7890")
+	if err != nil {
+		panic(err)
 	}
-	transport := &http.Transport{Proxy: proxy}
-	client.HTTPClient = &http.Client{Transport: transport}
+	transport := &http.Transport{
+		Proxy: http.ProxyURL(proxyUrl),
+	}
+	config.HTTPClient = &http.Client{
+		Transport: transport,
+	}
 
-	// 发送请求
-	request := openaigo.ChatCompletionRequestBody{
-		Model: "gpt-3.5-turbo",
-		Messages: []openaigo.ChatMessage{
-			{Role: "user", Content: content.Text},
+	// 创建请求客户端
+	client := openai.NewClientWithConfig(config)
+	resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: content.Text,
+				},
+			},
 		},
-	}
-	ctx := context.Background()
-	response, err := client.Chat(ctx, request)
+	)
+
 	if err != nil {
 		fmt.Println("请求chatgpt错误：", err.Error())
 	}
-	return c.String(http.StatusOK, response.Choices[0].Message.Content)
+	return c.String(http.StatusOK, resp.Choices[0].Message.Content)
 }
