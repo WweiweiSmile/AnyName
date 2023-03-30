@@ -1,4 +1,4 @@
-import { useAxios } from ".";
+import { DefaultResponse, useAxios } from ".";
 import axios from "axios";
 import { useRequest } from "ahooks";
 /**
@@ -38,6 +38,7 @@ type FileInfo = {
   modifyTime: number;
   isDir: boolean;
 };
+
 export const useGetFileInfos = () => {
   return useRequest(
     async (isPrivate: boolean) => {
@@ -56,14 +57,19 @@ export const useGetFileInfos = () => {
  * 验证权限
  * @returns
  */
-export type AuthResponeStatus = 200 | 201 | 400;
+interface AuthResponse extends DefaultResponse {
+  data: {
+    private: boolean;
+  };
+}
 export const useGetAuth = () => {
+  const axios = useAxios()
   return useRequest(
     async (password: string) => {
-      const res = await axios.get<AuthResponeStatus>(
+      const res = await axios.get<AuthResponse>(
         "/api/auth/" + `${password || "not"}`
       );
-      return res.data;
+      return res.data.data;
     },
     {
       manual: true,
