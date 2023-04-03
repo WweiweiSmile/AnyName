@@ -21,9 +21,11 @@
     "openai": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-markdown": "^8.0.6",
     "react-router": "^6.8.1",
     "react-router-dom": "^6.9.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
+    "react-syntax-highlighter": "^15.5.0",
     "react-video-renderer": "^2.5.1",
     "sass": "1.32.13",
     "sass-loader": "^13.2.0",
@@ -54,5 +56,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-syntax-highlighter": "^15.5.6"
   }
 }
