@@ -1,4 +1,6 @@
 import { useRequest } from "ahooks";
+
+import axios from "axios"
 import { Configuration, OpenAIApi } from "openai";
 
 const config = new Configuration({
@@ -7,21 +9,16 @@ const config = new Configuration({
 
 const oepnai = new OpenAIApi(config);
 
+
+
 export const useGetAnswer = () => {
   return useRequest(
     async (text: string) => {
       try {
-        const data = await oepnai.createChatCompletion({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              content: text,
-              role: "user",
-            },
-          ],
+        const res = await axios.post("/api/openai", {
+          text: text,
         });
-        console.log(data);
-        return data.data.choices[0].message?.content;
+        return res.data as string;
       } catch (err) {
         return "未知错误";
       }

@@ -140,7 +140,8 @@ const AiContent: React.FC = () => {
         style={{
           // width: "90vw",
           margin: "0px auto",
-          height: "calc(100vh - 200px)",
+          // height: "calc(100vh - 200px)",
+          // width: "calc(100vw - 200px)",
           overflowY: "auto",
           backgroundColor:"white",
           padding:"24px 16px 24px 10px",
@@ -149,7 +150,7 @@ const AiContent: React.FC = () => {
       >
         {content}
       </div>
-      <div style={{position:"absolute",bottom:'0',width:"100%",padding:"20px 0",height:"100px"}}>
+      <div style={{position:"absolute",bottom:'20px',width: "calc(100vw - 300px)",height:"100px"}}>
         <Row justify={'center'} align={'middle'}>
           <Col span={20} style={{marginRight:"20px"}}>
             <Input.TextArea

@@ -2,9 +2,8 @@ import { Button, Input, Row, Col, message } from "antd";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
-import { useGetAuth } from "../../apis/file";
 import { useLocalStorageState } from "ahooks";
-import { AuthResponeStatus } from "../../apis/file";
+import { useGetAuth } from "../../apis/auth";
 export type _Auth = {
   auth: "private" | "public";
 };
@@ -17,17 +16,18 @@ const Login: React.FC = () => {
 
   // 登陆函数
   const loginFn = async (pwd: string) => {
-    const res: AuthResponeStatus = await getAuthRun(pwd);
-    const auth = res === 200 ? "private" : res === 201 ? "public" : "";
-    if (auth) {
-      setLocal({ auth });
-      message.success("确认过眼神，你是对的人~~~~~~~");
-      setTimeout(() => {
-        navigate("/home");
-      });
-      return;
-    }
-    message.error("连这都不知道？多捞哟！");
+    const res = await getAuthRun(pwd);
+    try {
+      const auth = res.private ? "private" : "public";
+      if (auth) {
+        setLocal({ auth });
+        message.success("确认过眼神，你是对的人~~~~~~~");
+        setTimeout(() => {
+          navigate("/home");
+        });
+        return;
+      }
+    } catch (err) {}
   };
 
   return (
