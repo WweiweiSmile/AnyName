@@ -22,7 +22,8 @@ const OpenAi: React.FC = () => {
   ]);
 
   // 获取chatgpt答案 hook
-  const { runAsync: getAnswerRun, loading } = useGetAnswer();
+  // const { runAsync: getAnswerRun, loading } = useGetAnswer();
+  const { runAsync: getAnswerRun, data, loading } = useGetAnswer();
   // 获取chatgpt答案 函数
   const getAnswerFn = async () => {
     const result = await getAnswerRun(questionText);
@@ -79,6 +80,7 @@ const OpenAi: React.FC = () => {
             </span>
           )}
         </Col>
+        <Col>流式数据：{data.replaceAll('"', "")}</Col>
       </Row>
       <div>
         <Row>

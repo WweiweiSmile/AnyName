@@ -4,9 +4,10 @@ import { Col, Row, Button, Card, Typography } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { UploadFile } from "antd/es/upload";
 import { useFileUplaod, get, useGetFileInfos } from "../../apis/file";
-import { useLocalStorageState } from "ahooks";
+import { useLocalStorageState, useMount } from "ahooks";
 import { _Auth } from "../Login";
 import { useNavigate } from "react-router-dom";
+import CacheComponent from "../Cache/CacheComponent";
 const { Meta } = Card;
 const { Text } = Typography;
 const getSizeSuffix = (number: number) => {
@@ -63,9 +64,6 @@ const FileUpload: React.FC = (props) => {
   };
 
   useEffect(() => {
-    console.log("渲染了-");
-  }, []);
-  useEffect(() => {
     uploadFileRun();
   }, [startUpload]);
   useEffect(() => {
@@ -73,7 +71,11 @@ const FileUpload: React.FC = (props) => {
   }, [isPrivate]);
   return (
     <>
-      <Row justify={"center"} gutter={[20, 20]}>
+      <Row
+        justify={"center"}
+        gutter={[20, 20]}
+        style={{ width: "90%", margin: "auto" }}
+      >
         <Col>
           <Upload
             fileList={fileList}
@@ -136,7 +138,7 @@ const FileUpload: React.FC = (props) => {
               ? `${locationStr}/video/${fileName}/${isPrivate}`
               : "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png";
             return (
-              <Col xs={12} xl={6} xxl={4}>
+              <Col xs={12} xl={6} xxl={4} key={fileInfo.name}>
                 <Card
                   // style={}
                   cover={<img alt="example" src={imgUrl} />}
@@ -144,6 +146,7 @@ const FileUpload: React.FC = (props) => {
                     <EyeOutlined
                       key={"view"}
                       onClick={() => {
+                        // window.location.pathname = `/videoPlay/${fileInfo?.name}`;
                         navigate(`/videoPlay/${fileInfo?.name}`);
                       }}
                     />,

@@ -3,7 +3,9 @@ package openai
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -23,7 +25,7 @@ func OpenaiHanddle(c echo.Context) error {
 	json.Unmarshal([]byte(string(body)), &content)
 
 	// 添加代理
-	config := openai.DefaultConfig("")
+	config := openai.DefaultConfig("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")
 	proxyUrl, err := url.Parse("http://127.0.0.1:7890")
 	if err != nil {
 		panic(err)
@@ -37,7 +39,7 @@ func OpenaiHanddle(c echo.Context) error {
 
 	// 创建请求客户端
 	client := openai.NewClientWithConfig(config)
-	resp, err := client.CreateChatCompletion(
+	resp, err := client.CreateChatCompletionStream(
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model: openai.GPT3Dot5Turbo,
@@ -47,11 +49,25 @@ func OpenaiHanddle(c echo.Context) error {
 					Content: content.Text,
 				},
 			},
+			Stream: true,
 		},
 	)
 
-	if err != nil {
-		fmt.Println("请求chatgpt错误：", err.Error())
+	defer resp.Close()
+	for {
+		res, error := resp.Recv()
+		if errors.Is(error, io.EOF) {
+			return c.String(http.StatusOK, "完成")
+		}
+		if err != nil {
+			fmt.Println("请求chatgpt错误：", err.Error())
+		}
+		err := json.NewEncoder(c.Response()).Encode(res.Choices[0].Delta.Content)
+		if err != nil {
+			fmt.Println("流输出失败：", err.Error())
+			return c.String(http.StatusOK, "失败")
+		}
+
 	}
-	return c.String(http.StatusOK, resp.Choices[0].Message.Content)
+	// return c.String(http.StatusOK, resp.Choices[0].Message.Content)
 }

@@ -9,9 +9,7 @@ function App() {
   return (
     <div className="App">
       <WithAuth>
-        {/* <CacheContainer> */}
-          <RouterProvider router={router} />
-        {/* </CacheContainer> */}
+        <RouterProvider router={router} />
       </WithAuth>
     </div>
   );

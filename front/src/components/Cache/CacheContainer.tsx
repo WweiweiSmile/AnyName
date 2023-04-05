@@ -4,40 +4,107 @@ interface CacheContainerProps {
   children: ReactNode;
 }
 
-interface CacheContainerContext {
-  // elements: Record<Key, ReactNode>;
-  getElement: (key: Key) => React.Ref<HTMLDivElement>;
-  appendElement: (key: Key, ref: React.Ref<HTMLDivElement>) => void;
+type CacheStatus = "create" | "created" | "destory";
+interface CacheComponent {
+  key: Key;
+  children: ReactNode;
+  doms: ChildNode[];
+  status: CacheStatus;
 }
+
+interface CacheContainerContext {
+  state: Record<string, CacheComponent>;
+  appendElement: (key: Key, element: ReactNode) => void;
+}
+
 export const CacheContainerContext = createContext<CacheContainerContext>({
-  getElement: () => null,
-  appendElement: () => null,
+  state: {},
+  appendElement: (key, element) => {
+    console.log(key, element);
+  },
 });
 
 const CacheContainer: React.FC<CacheContainerProps> = (props) => {
-  return <></>
   const { children } = props;
-  const ref = useRef<HTMLDivElement>(null);
+  const [cacheElement, setCacheElement] = useState<
+    Record<string, CacheComponent>
+  >({});
+  const cacheRef = useRef<HTMLDivElement>(null);
+
+  // 保存 缓存组件方法
+  const setCacheElementFn = (
+    key: Key,
+    element: CacheComponent,
+    log?: string
+  ) => {
+    console.log("setCacheElementFn", log, "->", key, element);
+    setCacheElement({
+      ...cacheElement,
+      [key]: element,
+    });
+  };
+
+  // 添加 缓存组件
   const appendElement: CacheContainerContext["appendElement"] = (
     key,
-    ref:React.Ref<HTMLDivElement>
-  ) => {};
-  const getElement: CacheContainerContext["getElement"] = (key) => {
-    return null
+    element
+  ) => {
+    const cacheComponent: CacheComponent = {
+      key: key,
+      status: "create",
+      doms: [],
+      children: element,
+    };
+    // 如果缓存的组件没有被创建
+    if (cacheElement[key]?.status !== "created") {
+      setCacheElementFn(key, cacheComponent, "添加children");
+    }
   };
+
   return (
-    <CacheContainerContext.Provider value={{ appendElement, getElement }}>
-      {children}
-      <div
-        ref={ref}
-        style={{
-          position: "absolute",
-          zIndex: "0",
-          height: 0,
-          width: 0,
-          overflow: "hidden",
-        }}
-      ></div>
+    <CacheContainerContext.Provider
+      value={{
+        state: cacheElement,
+        appendElement,
+      }}
+    >
+      <div id="CacheContainer" ref={cacheRef}>
+        <div id="CacheContainerContent">{children}</div>
+        <div
+          id={"cache"}
+          style={{ width: "0px", height: "0px", overflow: "hidden" }}
+        >
+          {Object.keys(cacheElement).map((key) => {
+            const reactNode = cacheElement[key].children;
+            return (
+              <div
+                id={"Cache-" + key}
+                ref={(ref) => {
+                  const nodes: ChildNode[] = [];
+                  ref?.childNodes.forEach((node) => nodes.push(node));
+
+                  const cacheComponent = cacheElement[key];
+                  // 如果组件渲染了，并且组件并没在缓存中
+                  if (ref && cacheComponent.status !== "created") {
+                    setCacheElementFn(
+                      key,
+                      {
+                        ...cacheComponent,
+                        doms: nodes,
+                        status: "created",
+                      },
+                      "实例渲染完成"
+                    );
+                  }
+                }}
+                key={key}
+              >
+                {reactNode}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </CacheContainerContext.Provider>
   );
 };

@@ -1,14 +1,23 @@
-import { createBrowserRouter, RouteObject } from "react-router-dom";
-import App from "../App";
+import React from "react";
+import { createBrowserRouter, RouteObject, Router } from "react-router-dom";
 import Login from "../components/Login";
 import VideoPlay from "../components/videoPlay";
 import FileUpload from "../components/FileList";
 import Home from "../components/Home";
-import CacheComponent from "../components/Cache/CacheComponent";
+import Index from "../components/index";
 import OpenAi from "../components/openai";
+import CacheComponent from "../components/Cache/CacheComponent";
+import CacheContainer from "../components/Cache/CacheContainer";
+// const FileUpload = React.lazy(() => import("../components/FileList/index"));
+
 const routes: RouteObject[] = [
   {
     path: "/",
+    element: (
+      <CacheContainer>
+        <Index></Index>
+      </CacheContainer>
+    ),
     children: [
       {
         path: "home",
@@ -16,7 +25,13 @@ const routes: RouteObject[] = [
       },
       {
         path: "fileList",
-        element: <FileUpload />,
+        element: (
+          <>
+            <CacheComponent onlyKey={"fileList"}>
+              <FileUpload />
+            </CacheComponent>
+          </>
+        ),
       },
       {
         path: "videoPlay/:fileName",
