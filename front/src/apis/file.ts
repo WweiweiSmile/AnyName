@@ -1,6 +1,7 @@
 import { DefaultResponse, useAxios } from ".";
 import axios from "axios";
-import { useRequest } from "ahooks";
+import { useLocalStorageState, useRequest } from "ahooks";
+import { useAuthContext } from "../hooks";
 /**
  * 文件上传函数
  * @returns
@@ -9,10 +10,10 @@ export const useFileUplaod = () => {
   const axios = useAxios();
 
   return useRequest(
-    async (data: { file: File; isPrivate: string }) => {
+    async (data: { file: File; path: string[] }) => {
       const formData = new FormData();
       formData.append("file", data.file);
-      formData.append("isPrivate", data.isPrivate);
+      formData.append("path", data.path.join('_'));
       try {
         const res = await axios.post("/api/savefile", formData);
         return res;
@@ -39,11 +40,16 @@ type FileInfo = {
   isDir: boolean;
 };
 
+/**
+ * 获取所有文件的信息
+ * @returns
+ */
 export const useGetFileInfos = () => {
+  const { user } = useAuthContext();
   return useRequest(
-    async (isPrivate: boolean) => {
+    async (path: string[]) => {
       const res = await axios.get<FileInfo[]>(
-        "/api/get/files" + `/${isPrivate ? "true" : "false"}`
+        "/api/get/files" + `/${path.join("_")}`
       );
       return res.data;
     },
@@ -54,22 +60,13 @@ export const useGetFileInfos = () => {
 };
 
 /**
- * 验证权限
- * @returns
+ * 创建文件夹
  */
-interface AuthResponse extends DefaultResponse {
-  data: {
-    private: boolean;
-  };
-}
-export const useGetAuth = () => {
-  const axios = useAxios()
+export const useCreateDir = () => {
   return useRequest(
-    async (password: string) => {
-      const res = await axios.get<AuthResponse>(
-        "/api/auth/" + `${password || "not"}`
-      );
-      return res.data.data;
+    async (path: string[]) => {
+      const res = await axios.get("/api/createDir" + `/${path.join("_")}`);
+      return res.data;
     },
     {
       manual: true,

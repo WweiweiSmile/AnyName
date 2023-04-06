@@ -7,7 +7,8 @@ import (
 )
 
 type Auth struct {
-	Private bool `json:"private"`
+	Private bool     `json:"private"`
+	Path    []string `json:"path"`
 }
 
 type AuthResponse struct {
@@ -21,19 +22,25 @@ func ValidateAuth(c echo.Context) error {
 	password := c.Param("password")
 	var response AuthResponse
 	if password == "qwqwqw797979" {
+		var pathArr []string
+		pathArr = append(pathArr, "FFFF00")
 		response = AuthResponse{
 			Code: 200,
 			Msg:  "成功登陆",
 			Data: Auth{
 				Private: true,
+				Path:    pathArr,
 			},
 		}
 	} else if password == "wutuobang" {
+		var pathArr []string
+		pathArr = append(pathArr, "Heaven")
 		response = AuthResponse{
 			Code: 200,
 			Msg:  "成功登陆",
 			Data: Auth{
 				Private: false,
+				Path:    pathArr,
 			},
 		}
 	} else {

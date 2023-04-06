@@ -12,7 +12,9 @@ func main() {
 	e := echo.New()
 
 	// 获取所有文件信息
-	e.GET("/api/get/files/:isPrivate", videoplay.GetFilesInfo)
+	e.GET("/api/get/files/:path", videoplay.GetFilesInfo)
+	// 创建文件夹
+	e.GET("/api/createDir/:path", videoplay.CreateDir)
 	// 请求视频
 	e.GET("/video/:fileName/:isPrivate", videoplay.GetVideo)
 	// 上传文件

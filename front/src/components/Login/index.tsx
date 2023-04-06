@@ -4,23 +4,29 @@ import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import { useLocalStorageState } from "ahooks";
 import { useGetAuth } from "../../apis/auth";
+import { useAuthContext } from "../../hooks";
 export type _Auth = {
   auth: "private" | "public";
+  path: string[];
 };
 
 const Login: React.FC = () => {
   const [password, setPassword] = useState("");
-  const { data, runAsync: getAuthRun } = useGetAuth();
-  const [local, setLocal] = useLocalStorageState<_Auth>("_auth", {});
+  const { runAsync: getAuthRun } = useGetAuth();
+  const { setUser } = useAuthContext();
   const navigate = useNavigate();
 
   // 登陆函数
   const loginFn = async (pwd: string) => {
     const res = await getAuthRun(pwd);
     try {
+      const { path } = res;
       const auth = res.private ? "private" : "public";
       if (auth) {
-        setLocal({ auth });
+        setUser({
+          auth: auth,
+          path: path,
+        });
         message.success("确认过眼神，你是对的人~~~~~~~");
         setTimeout(() => {
           navigate("/home");

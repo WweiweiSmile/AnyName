@@ -25,7 +25,7 @@ export const useAxios = () => {
       } catch (err) {
         throw err;
       }
-      return res;
+      return data;
     },
     (err) => {
       message.error((err as Error).message);

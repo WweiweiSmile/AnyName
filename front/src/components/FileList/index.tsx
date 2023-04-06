@@ -1,13 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { message, Popover, Space, Upload } from "antd";
+import {
+  Breadcrumb,
+  Image,
+  Input,
+  message,
+  Popover,
+  Space,
+  Upload,
+} from "antd";
 import { Col, Row, Button, Card, Typography } from "antd";
-import { EyeOutlined } from "@ant-design/icons";
+import {
+  EyeOutlined,
+  FileTextFilled,
+  FolderFilled,
+  FolderOpenOutlined,
+} from "@ant-design/icons";
 import { UploadFile } from "antd/es/upload";
-import { useFileUplaod, get, useGetFileInfos } from "../../apis/file";
+import {
+  useFileUplaod,
+  get,
+  useGetFileInfos,
+  useCreateDir,
+} from "../../apis/file";
 import { useLocalStorageState, useMount } from "ahooks";
 import { _Auth } from "../Login";
 import { useNavigate } from "react-router-dom";
 import CacheComponent from "../Cache/CacheComponent";
+import { useAuthContext } from "../../hooks";
 const { Meta } = Card;
 const { Text } = Typography;
 const getSizeSuffix = (number: number) => {
@@ -26,17 +45,26 @@ const getSizeSuffix = (number: number) => {
 };
 
 const FileUpload: React.FC = (props) => {
-  const [local, setLocal] = useLocalStorageState<_Auth>("_auth");
-  const isPrivate = local.auth === "private";
+  const { user } = useAuthContext();
+  const isPrivate = user.auth === "private";
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const navigate = useNavigate();
+  const [dirName, setDirName] = useState("");
+  const [dirPath, setDirPath] = useState<string[]>([...(user.path || [])]);
+  const [createDirOpen, setCreateDirOpen] = useState(false);
   const { runAsync: fileUPloadRun } = useFileUplaod();
-  const { data: fileInfos, runAsync: fileInfosRun } = useGetFileInfos();
+  const {
+    data: fileInfos,
+    runAsync: fileInfosRun,
+    refresh: fileInfosRefresh,
+  } = useGetFileInfos();
+  const { runAsync: creaetDirRun } = useCreateDir();
   const [startUpload, setStartUpload] = useState<object>();
   const locationStr =
     window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8096";
   const pngIsExist: Record<string, boolean> = {};
 
+  // 上传文件 函数
   const uploadFileRun = async () => {
     if (fileList.length === 0) return;
     const [file, ...newFileList] = fileList;
@@ -50,12 +78,12 @@ const FileUpload: React.FC = (props) => {
       });
       await fileUPloadRun({
         file: file as any,
-        isPrivate: isPrivate ? "true" : "false",
+        path: dirPath,
       });
       setFileList(fileList?.filter((file) => file?.name !== fileName));
       message.destroy(fileName);
       message.success(`${fileName} -- 上传成功！`);
-      fileInfosRun(isPrivate);
+      fileInfosRun(dirPath);
       setFileList(newFileList);
       setStartUpload({});
     } catch (err) {
@@ -63,14 +91,35 @@ const FileUpload: React.FC = (props) => {
     }
   };
 
+  //  创建文件夹函数
+  const createDirFn = async () => {
+    const paths = [...dirPath, dirName];
+    try {
+      await creaetDirRun(paths);
+      fileInfosRefresh();
+      setCreateDirOpen(false);
+      message.success("文件夹创建成功！");
+    } catch (err) {}
+  };
+
   useEffect(() => {
     uploadFileRun();
   }, [startUpload]);
   useEffect(() => {
-    fileInfosRun(isPrivate);
-  }, [isPrivate]);
+    fileInfosRun(dirPath);
+  }, [dirPath]);
   return (
     <>
+      <Breadcrumb>
+        <Breadcrumb.Item>文件管理</Breadcrumb.Item>
+        {dirPath.map((path, index) => (
+          <Breadcrumb.Item
+            onClick={() => setDirPath(dirPath.slice(0, index + 1))}
+          >
+            {path}
+          </Breadcrumb.Item>
+        ))}
+      </Breadcrumb>
       <Row
         justify={"center"}
         gutter={[20, 20]}
@@ -105,20 +154,29 @@ const FileUpload: React.FC = (props) => {
         </Col>
         <Col>
           <Popover
+            open={createDirOpen}
             title={undefined}
             content={
               <Space>
-                <Button>{"新增文件"}</Button>
-                <Button>{"新增文件夹"}</Button>
+                <Input
+                  value={dirName}
+                  onChange={(e) => setDirName(e.target.value)}
+                ></Input>
+                <Button onClick={createDirFn}>{"新增"}</Button>
               </Space>
             }
           >
-            <Button>{"新增文件夹"}</Button>
+            <Button onClick={() => setCreateDirOpen(!createDirOpen)}>
+              {"新增文件夹"}
+            </Button>
           </Popover>
         </Col>
       </Row>
       <Row style={{ width: "100%" }} gutter={[10, 20]} justify={"space-around"}>
         {(fileInfos || [])
+          .sort((a, b) => {
+            return a.isDir ? -1 : 1;
+          })
           ?.filter((item) => {
             if (item?.name.lastIndexOf(".png") !== -1) {
               pngIsExist[item.name] = true;
@@ -137,17 +195,37 @@ const FileUpload: React.FC = (props) => {
             const imgUrl = pngIsExist[fileName]
               ? `${locationStr}/video/${fileName}/${isPrivate}`
               : "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png";
+
+            console.log("fileInfo.name->", fileInfo.name);
+
+            const cover = fileInfo.isDir ? (
+              <FolderFilled style={{ fontSize: "10rem", color: "#ffd45e" }} />
+            ) : fileInfo.name.split(".").pop() === "txt" ? (
+              <FileTextFilled style={{ fontSize: "10rem", color: "#d8dade" }} />
+            ) : (
+              <img alt="example" src={imgUrl} />
+            );
             return (
               <Col xs={12} xl={6} xxl={4} key={fileInfo.name}>
                 <Card
-                  // style={}
-                  cover={<img alt="example" src={imgUrl} />}
+                  cover={cover}
                   actions={[
                     <EyeOutlined
                       key={"view"}
                       onClick={() => {
-                        // window.location.pathname = `/videoPlay/${fileInfo?.name}`;
-                        navigate(`/videoPlay/${fileInfo?.name}`);
+                        const suffix = fileInfo.name.split(".").pop() || "";
+                        // 文件夹
+                        if (fileInfo.isDir) {
+                          setDirPath([...dirPath, fileInfo.name]);
+                        }
+                        // 视频文件
+                        else if (["mp4", "MP4"].includes(suffix)) {
+                          navigate(`/videoPlay/${fileInfo?.name}`);
+                        }
+                        // 其他文件
+                        else {
+                          message.error("该文件还不支持预览，请期待后续开发");
+                        }
                       }}
                     />,
                   ]}

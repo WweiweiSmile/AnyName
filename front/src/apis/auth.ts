@@ -8,16 +8,17 @@ import { DefaultResponse, useAxios } from ".";
 interface AuthResponse extends DefaultResponse {
   data: {
     private: boolean;
+    path: string[];
   };
 }
 export const useGetAuth = () => {
-  const axios = useAxios()
+  const axios = useAxios();
   return useRequest(
     async (password: string) => {
-      const res = await axios.get<AuthResponse>(
+      const res: AuthResponse = await axios.get(
         "/api/auth/" + `${password || "not"}`
       );
-      return res.data.data;
+      return res.data;
     },
     {
       manual: true,
