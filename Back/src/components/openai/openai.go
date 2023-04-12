@@ -25,7 +25,7 @@ func OpenaiHanddle(c echo.Context) error {
 	json.Unmarshal([]byte(string(body)), &content)
 
 	// 添加代理
-	config := openai.DefaultConfig("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")
+	config := openai.DefaultConfig("")
 	proxyUrl, err := url.Parse("http://127.0.0.1:7890")
 	if err != nil {
 		panic(err)
