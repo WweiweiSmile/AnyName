@@ -48,7 +48,10 @@ const WithAuth: React.FC<WithAuthProps> = ({ children }) => {
   // 权限值
   const authValue: AuthContextType = {
     user: user,
-    setUser: (auth) => setUser(auth),
+    setUser: (auth) => {
+      setUser(auth);
+      setLocal(auth);
+    },
     logout: () => {
       const defaultUser: _Auth = {
         auth: "logout",
@@ -60,16 +63,9 @@ const WithAuth: React.FC<WithAuthProps> = ({ children }) => {
       window.location.reload();
     },
   };
-  // 如果未登录，也不是登陆页面 不显示
-  const visible =
-    user.auth === "private" ||
-    user.auth === "public" ||
-    window.location.pathname === "/login";
 
   return (
-    <AuthContext.Provider value={authValue}>
-      {visible && children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
   );
 };
 

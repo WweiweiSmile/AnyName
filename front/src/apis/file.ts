@@ -13,7 +13,7 @@ export const useFileUplaod = () => {
     async (data: { file: File; path: string[] }) => {
       const formData = new FormData();
       formData.append("file", data.file);
-      formData.append("path", data.path.join('_'));
+      formData.append("path", data.path.join("_"));
       try {
         const res = await axios.post("/api/savefile", formData);
         return res;
@@ -38,6 +38,7 @@ type FileInfo = {
   mode: number;
   modifyTime: number;
   isDir: boolean;
+  cover: string;
 };
 
 /**

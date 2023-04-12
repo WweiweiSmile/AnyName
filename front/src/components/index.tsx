@@ -1,15 +1,20 @@
-import { useLocalStorageState, useMount } from "ahooks";
-import { Button, Col, Row } from "antd";
-import { Content } from "antd/es/layout/layout";
-import React, { ReactNode, useEffect } from "react";
-import { useNavigate, useOutlet } from "react-router-dom";
-import CacheComponent from "./Cache/CacheComponent";
+import React, { useEffect } from "react";
+import { useNavigate, useOutlet, useLocation } from "react-router-dom";
 import { _Auth } from "./Login";
+import { useAuthContext } from "../hooks";
 
 const Index: React.FC = () => {
   const navigate = useNavigate();
-  const [local, setLocal] = useLocalStorageState<_Auth>("_auth", {});
+  const location = useLocation();
   const outlet = useOutlet();
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    // 已登录，当前页面 === '/'，跳转到home页面
+    if (user.auth !== "logout" && location.pathname === "/") {
+      navigate("/home");
+    }
+  }, [location.pathname]);
 
   return <>{outlet}</>;
 };

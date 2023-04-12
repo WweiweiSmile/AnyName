@@ -34,7 +34,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: "videoPlay/:fileName",
+        path: "videoPlay",
         element: (
           <VideoPlay open={true} onClose={() => {}} src={""}></VideoPlay>
         ),

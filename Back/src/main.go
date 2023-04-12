@@ -16,7 +16,7 @@ func main() {
 	// 创建文件夹
 	e.GET("/api/createDir/:path", videoplay.CreateDir)
 	// 请求视频
-	e.GET("/video/:fileName/:isPrivate", videoplay.GetVideo)
+	e.GET("/videoPlay", videoplay.GetVideo)
 	// 上传文件
 	e.POST("/api/savefile", videoplay.SaveFile)
 	// auth

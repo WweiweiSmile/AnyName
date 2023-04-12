@@ -177,33 +177,20 @@ const FileUpload: React.FC = (props) => {
           .sort((a, b) => {
             return a.isDir ? -1 : 1;
           })
-          ?.filter((item) => {
-            if (item?.name.lastIndexOf(".png") !== -1) {
-              pngIsExist[item.name] = true;
-            }
-            return item?.name.lastIndexOf(".png") === -1;
-          })
           ?.map((fileInfo) => {
             let fileName = fileInfo?.name;
-            if (fileName?.lastIndexOf(".png")) {
-              fileName = fileName?.replaceAll(".mp4", ".png");
-            }
-            const imgFileSplit: string[] = fileInfo?.name?.split(".");
-            const imgFileName: string =
-              imgFileSplit?.slice(0, imgFileSplit?.length - 1).join(".") +
-              ".png";
-            const imgUrl = pngIsExist[fileName]
-              ? `${locationStr}/video/${fileName}/${isPrivate}`
-              : "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png";
-
-            console.log("fileInfo.name->", fileInfo.name);
+            const { cover: coverName } = fileInfo;
+            const coverUrl = `${locationStr}/videoPlay?path=${JSON.stringify([
+              ...dirPath,
+              ".cover",
+            ])}&fileName=${coverName}`;
 
             const cover = fileInfo.isDir ? (
               <FolderFilled style={{ fontSize: "10rem", color: "#ffd45e" }} />
             ) : fileInfo.name.split(".").pop() === "txt" ? (
               <FileTextFilled style={{ fontSize: "10rem", color: "#d8dade" }} />
             ) : (
-              <img alt="example" src={imgUrl} />
+              <img alt="example" src={coverUrl} />
             );
             return (
               <Col xs={12} xl={6} xxl={4} key={fileInfo.name}>
@@ -219,8 +206,12 @@ const FileUpload: React.FC = (props) => {
                           setDirPath([...dirPath, fileInfo.name]);
                         }
                         // 视频文件
-                        else if (["mp4", "MP4"].includes(suffix)) {
-                          navigate(`/videoPlay/${fileInfo?.name}`);
+                        else if (["mp4"].includes(suffix.toLowerCase())) {
+                          navigate(
+                            `/videoPlay?path=${JSON.stringify(
+                              dirPath
+                            )}&fileName=${fileName}`
+                          );
                         }
                         // 其他文件
                         else {

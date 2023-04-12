@@ -1,10 +1,9 @@
 import React, { useRef, useState } from "react";
 import Video from "react-video-renderer";
 import { Button, Col, Row, Space } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 import VideoProgress from "./children/Progress";
 import "./index.scss";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useLocalStorageState } from "ahooks";
 import { _Auth } from "../Login";
 type VideoPlayPropsType = {
@@ -15,14 +14,13 @@ type VideoPlayPropsType = {
 const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
   const { open, onClose } = props;
   const [toolbarVisible, setToolbarVisible] = useState(false);
+  const location = useLocation();
   const { fileName } = useParams();
   const [state] = useLocalStorageState<_Auth>("_auth");
   const timouter = useRef<NodeJS.Timeout[]>([]);
   const locationStr =
     window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8096";
-  const src = `${locationStr}/video/${fileName}/${
-    state.auth === "private" ? "true" : "false"
-  }`;
+  const src = `${locationStr}${location.pathname}${location.search}`;
   return (
     <>
       {open && (
@@ -49,23 +47,6 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
               }}
             >
               {video}
-              <div
-                className="topToolbar"
-                onMouseEnter={() => setToolbarVisible(true)}
-                onMouseLeave={() => setToolbarVisible(false)}
-                style={{ opacity: Number(toolbarVisible) }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              >
-                <Space>
-                  <ArrowLeftOutlined
-                    style={{ color: "white", fontSize: "32px" }}
-                    onClick={onClose}
-                  />
-                </Space>
-              </div>
               <div
                 className="bottomToolbarContainer"
                 onMouseEnter={() => setToolbarVisible(true)}
@@ -110,6 +91,7 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
                         >
                           全屏
                         </Button>
+                        <Button onClick={() => window.open(src)}>下载</Button>
                       </Space>
                     </Row>
                   </div>

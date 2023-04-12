@@ -1,43 +1,79 @@
 package main
 
 import (
+	"Back/src/components/utils"
 	"fmt"
 	"io/ioutil"
-	"os/exec"
+	"os"
 	"strings"
 )
 
-var dirPath string = "E:\\FFFF00/"
-
 func main() {
-	var files, _ = ioutil.ReadDir(dirPath)
-	for i := 0; i < len(files); i++ {
-		var file = files[i]
-		//  将文件名 以 . 分割为数组
-		strArr := strings.Split(file.Name(), ".")
-		// 文件名 前缀
-		filePrefix := strings.Join(strArr[0:len(strArr)-1], ".")
-		// 文件名 扩展
-		fileSuffix := strArr[len(strArr)-1]
-		// 图片文件名
-		targetFileName := filePrefix + ".png"
-		// 如果是 mp4文件格式
-		if fileSuffix == "MP4" || fileSuffix == "mp4" {
-			// -ss 开始时间  -i 输入 -vframes 帧 -f 文件类型
-			cmd := exec.Command("ffmpeg",
-				"-ss", "00:00:10",
-				"-i", file.Name(),
-				"-vframes", "1",
-				"-f", "image2",
-				targetFileName,
-			)
-			// 执行命令的目录
-			cmd.Dir = dirPath
-			// 如果有错误
-			if err := cmd.Run(); err != nil {
-				fmt.Println("错误文件："+file.Name(), err.Error())
-				// return
+
+	var dirPathArr = []string{"E:\\FFFF00/", "E:\\Heaven/"}
+
+	for {
+		if !(len(dirPathArr) > 0) {
+			break
+		}
+		// 文件夹路径
+		dirPath := dirPathArr[0]
+		// 封面文件夹路径
+		coverDirPath := dirPath + ".cover/"
+
+		files, _ := ioutil.ReadDir(dirPath)
+		coverFiles, err := ioutil.ReadDir(coverDirPath)
+
+		// 如果没有封面文件夹，创建封面文件夹
+		if err != nil {
+			if os.MkdirAll(coverDirPath, os.ModePerm) != nil {
+				fmt.Println("error: 封面文件夹创建失败。", "封面路径：", coverDirPath)
+				return
 			}
 		}
+
+		for _, file := range files {
+
+			// 是文件夹，并且不是封面文件夹  添加路径
+			if file.IsDir() && (file.Name() != ".cover") {
+				dirPathArr = append(dirPathArr, dirPath+file.Name()+"/")
+				continue
+			}
+
+			// 文件名 扩展
+			fileSuffix := utils.GetFileSuffix(file.Name())
+			// 封面文件名
+			coverFileName := utils.ModifyFileSuffix(file.Name(), ".png")
+
+			/*
+				如果有封面，跳出
+			*/
+			coverIndex := -1
+			for i, cover := range coverFiles {
+				if cover.Name() == coverFileName {
+					coverIndex = i
+					break
+				}
+			}
+			if coverIndex != -1 {
+				continue
+			}
+
+			// 如果是 mp4文件格式
+			if strings.Contains(".mp4.avi", strings.ToLower(fileSuffix)) {
+
+				coverName, err := utils.VideoFrameToPng(dirPath, file.Name())
+				// 如果有错误
+				if err != nil {
+					fmt.Println("error：创建封面文件失败，", "文件绝对路径：", dirPath+file.Name())
+					break
+				}
+				fmt.Println("success：创建封面文件成功，", "封面文件绝对路径：", coverName)
+			}
+		}
+
+		// 移去第一个 文件夹路径
+		dirPathArr = dirPathArr[1:]
 	}
+
 }

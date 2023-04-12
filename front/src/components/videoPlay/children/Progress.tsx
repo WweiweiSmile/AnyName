@@ -4,7 +4,7 @@ import { VideoActions, VideoState } from "react-video-renderer";
 
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-
+import "./Progress.scss";
 interface VideoProgressProps {
   actions: VideoActions;
   state: VideoState;
@@ -40,7 +40,7 @@ const VideoProgress: React.FC<VideoProgressProps> = (props) => {
   );
 
   return (
-    <div ref={progressRef} onClick={progressClick}>
+    <div ref={progressRef} onClick={progressClick} className={"Progress"}>
       <Row justify={"center"}>
         <Col>
           <span style={{ color: "white" }}>{progressTime}</span>
