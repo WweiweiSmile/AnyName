@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var basicPath string = "E:\\"
+var basicPath string = "D:\\"
 
 /*
 path  当前文件夹路径，fileName  视频文件名 。 返回封面文件的绝对路径

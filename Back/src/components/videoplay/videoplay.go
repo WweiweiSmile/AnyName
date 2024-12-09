@@ -14,7 +14,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-var basicPath string = "E:\\"
+var basicPath string = "D:\\"
 
 // 获取视频
 func GetVideo(c echo.Context) error {
@@ -26,11 +26,11 @@ func GetVideo(c echo.Context) error {
 	if err != nil {
 		fmt.Println("GetVideo ： 解析参数失败")
 	}
-	println("fileName->", fileName)
+	// println("fileName->", fileName)
 	var filePrePath = basicPath + strings.Join(filePaths, "/") + "/" + fileName
 	currentTime := time.Now()
 	fmt.Println("fileName:", fileName, "， 当前时间：", currentTime.Format("2006-01-02 15:04:05"))
-	println("filePaht->", filePrePath)
+	// println("filePaht->", filePrePath)
 	return c.File(filePrePath)
 }
 

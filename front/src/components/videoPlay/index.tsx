@@ -6,6 +6,8 @@ import "./index.scss";
 import { useParams, useLocation } from "react-router-dom";
 import { useLocalStorageState } from "ahooks";
 import { _Auth } from "../Login";
+import {downloadFile} from '../../utils/utils'
+import { url } from "inspector";
 type VideoPlayPropsType = {
   open: boolean;
   onClose: VoidFunction;
@@ -91,7 +93,7 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
                         >
                           全屏
                         </Button>
-                        <Button onClick={() => window.open(src)}>下载</Button>
+                        <Button onClick={() =>  downloadFile(src, decodeURIComponent(src.split('=')[2]))}>下载</Button>
                       </Space>
                     </Row>
                   </div>

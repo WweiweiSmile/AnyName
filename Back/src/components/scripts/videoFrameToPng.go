@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	var dirPathArr = []string{"E:\\FFFF00/", "E:\\Heaven/"}
+	var dirPathArr = []string{"D:\\FFFF00/", "D:\\Heaven/"}
 
 	for {
 		if !(len(dirPathArr) > 0) {

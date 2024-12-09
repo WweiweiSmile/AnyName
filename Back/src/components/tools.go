@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	var filepath string = "E:\\FFFF/"
+	var filepath string = "D:\\FFFF/"
 	files, _ := os.ReadDir(filepath)
 	for i := 0; i < len(files); i++ {
 		file := files[i]
