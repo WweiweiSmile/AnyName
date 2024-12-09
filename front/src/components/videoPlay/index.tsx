@@ -7,7 +7,8 @@ import { useParams, useLocation } from "react-router-dom";
 import { useLocalStorageState } from "ahooks";
 import { _Auth } from "../Login";
 import {downloadFile} from '../../utils/utils'
-import { url } from "inspector";
+import Icon, {PauseCircleOutlined} from '@ant-design/icons';
+import PauseIcon from '../../../public/pause.png'
 type VideoPlayPropsType = {
   open: boolean;
   onClose: VoidFunction;
@@ -20,13 +21,20 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
   const { fileName } = useParams();
   const [state] = useLocalStorageState<_Auth>("_auth");
   const timouter = useRef<NodeJS.Timeout[]>([]);
+  const [pause,setPause] = useState(true);
   const locationStr =
     window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8096";
   const src = `${locationStr}${location.pathname}${location.search}`;
+
   return (
     <>
+      {
+        pause && <div className="fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2  ">
+          <PauseCircleOutlined   style={{fontSize:'10rem',color:'#b6b6b6'}}/>
+         </div>
+      }
       {open && (
-        <Video src={src || ""} autoPlay={true}>
+        <Video src={src || ""} autoPlay={false}>
           {(video, state, actions) => (
             <div
               className={`videoPlay`}
@@ -46,6 +54,8 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
                   timouter.current = [];
                 }
                 state.status === "paused" ? actions.play() : actions.pause();
+                state.status === "paused" ? setPause(false) : setPause(true);
+
               }}
             >
               {video}
