@@ -60,8 +60,9 @@ const FileUpload: React.FC = (props) => {
   } = useGetFileInfos();
   const { runAsync: creaetDirRun } = useCreateDir();
   const [startUpload, setStartUpload] = useState<object>();
+  //FIXME： 视频封面请求地址的端口是写死的
   const locationStr =
-    window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8096";
+    window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8080";
   const pngIsExist: Record<string, boolean> = {};
 
   // 上传文件 函数

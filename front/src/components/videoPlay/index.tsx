@@ -8,7 +8,6 @@ import { useLocalStorageState } from "ahooks";
 import { _Auth } from "../Login";
 import {downloadFile} from '../../utils/utils'
 import Icon, {PauseCircleOutlined} from '@ant-design/icons';
-import PauseIcon from '../../../public/pause.png'
 type VideoPlayPropsType = {
   open: boolean;
   onClose: VoidFunction;
@@ -22,8 +21,9 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
   const [state] = useLocalStorageState<_Auth>("_auth");
   const timouter = useRef<NodeJS.Timeout[]>([]);
   const [pause,setPause] = useState(true);
+  //FIXME： 视频封面请求地址的端口是写死的
   const locationStr =
-    window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8096";
+    window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8080";
   const src = `${locationStr}${location.pathname}${location.search}`;
 
   return (
