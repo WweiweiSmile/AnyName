@@ -15,7 +15,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-var basicPath string = "D:\\"
+var basicPath string = "F:\\"
 
 // 获取视频
 func GetVideo(c echo.Context) error {
@@ -32,7 +32,16 @@ func GetVideo(c echo.Context) error {
 	currentTime := time.Now()
 	fmt.Println("fileName:", fileName, "， 当前时间：", currentTime.Format("2006-01-02 15:04:05"))
 	// println("filePaht->", filePrePath)
-	return c.File(filePrePath)
+
+	//return c.File(filePrePath)
+
+	c.Response().Header().Set("Content-Type", "video/mp4")
+	f, err := os.Open(filePrePath)
+	if err != nil {
+		return err
+	}
+	return c.Stream(http.StatusOK, "video/mp4", f)
+
 }
 
 type Response struct {
