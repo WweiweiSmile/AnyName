@@ -5,24 +5,22 @@ import (
 	"Back/src/components/utils"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-
-	"github.com/labstack/echo"
 )
 
 var basicPath string = "F:\\"
 
 // 获取视频
-func GetVideo(c echo.Context) error {
-	queryParams := c.QueryParams()
+func GetVideo(c *gin.Context) {
+	fileName := c.Query("fileName")
 	var filePaths []string
-	fileName := queryParams.Get("fileName")
-	err := json.Unmarshal([]byte(queryParams.Get("path")), &filePaths)
+	err := json.Unmarshal([]byte(c.Query("path")), &filePaths)
 
 	if err != nil {
 		fmt.Println("GetVideo ： 解析参数失败")
@@ -34,13 +32,14 @@ func GetVideo(c echo.Context) error {
 	// println("filePaht->", filePrePath)
 
 	//return c.File(filePrePath)
+	c.Header("Content-Type", "video/mp4")
 
-	c.Response().Header().Set("Content-Type", "video/mp4")
-	f, err := os.Open(filePrePath)
+	f, err := os.ReadFile(filePrePath)
+
 	if err != nil {
-		return err
+		c.JSON(http.StatusBadRequest, nil)
 	}
-	return c.Stream(http.StatusOK, "video/mp4", f)
+	c.Data(http.StatusOK, "video/mp4", f)
 
 }
 
@@ -51,7 +50,7 @@ type Response struct {
 }
 
 // 上传文件
-func SaveFile(c echo.Context) error {
+func SaveFile(c *gin.Context) {
 	res := Response{
 		Code: 200,
 		Msg:  "文件上传成功",
@@ -59,22 +58,29 @@ func SaveFile(c echo.Context) error {
 	}
 
 	file, err := c.FormFile("file")
-	path := c.FormValue("path")
+	if file == nil || err != nil {
+		res.Code = 201
+		res.Msg = "上传了空文件"
+		c.JSON(http.StatusBadRequest, gin.H{"code": res.Code, "msg": res.Msg, "data": res.Data})
+		return
+	}
+	path := c.PostForm("path")
 
 	paths := strings.Split(path, "_")
 
 	if err != nil {
 		res.Code = 201
 		res.Msg = "读取文件失败"
-		return c.JSON(http.StatusOK, res)
+		c.JSON(http.StatusOK, res)
+		return
 	}
 
 	src, err := file.Open()
 	if err != nil {
 		res.Code = 201
 		res.Msg = "打开文件失败"
-		return c.JSON(http.StatusOK, res)
-
+		c.JSON(http.StatusOK, res)
+		return
 	}
 	defer src.Close()
 
@@ -85,23 +91,26 @@ func SaveFile(c echo.Context) error {
 	if err != nil {
 		res.Code = 201
 		res.Msg = "创建文件失败"
-		return c.JSON(http.StatusOK, res)
+		c.JSON(http.StatusOK, res)
+		return
 	}
 	defer dst.Close()
 
 	if _, err = io.Copy(dst, src); err != nil {
 		res.Code = 201
 		res.Msg = "复制文件失败"
-		return c.JSON(http.StatusOK, res)
+		c.JSON(http.StatusOK, res)
+		return
 	}
 	_, err = utils.VideoFrameToPng(filePrePath, file.Filename)
 
 	if err != nil {
 		res.Code = 201
 		res.Msg = "创建封面失败"
-		return c.JSON(http.StatusOK, res)
+		c.JSON(http.StatusOK, res)
+		return
 	}
-	return c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, res)
 
 }
 
@@ -117,7 +126,7 @@ type FileInfo struct {
 /*
 获取文件信息
 */
-func GetFilesInfo(c echo.Context) error {
+func GetFilesInfo(c *gin.Context) {
 	path := c.Param("path")
 	paths := strings.Split(path, "_")
 	// 文件夹路径
@@ -161,7 +170,7 @@ func GetFilesInfo(c echo.Context) error {
 		fileInfo.Cover = coverPath
 		fileInfos = append(fileInfos, fileInfo)
 	}
-	return c.JSON(http.StatusOK, fileInfos)
+	c.JSON(http.StatusOK, fileInfos)
 }
 
 /*
@@ -173,7 +182,7 @@ type DirResponse struct {
 	Data string `json:"data"`
 }
 
-func CreateDir(c echo.Context) error {
+func CreateDir(c *gin.Context) {
 	path := c.Param("path")
 	paths := strings.Split(path, "_")
 	filePrePath := basicPath + strings.Join(paths, "/") + "/"
@@ -190,13 +199,13 @@ func CreateDir(c echo.Context) error {
 	if err != nil || errCover != nil {
 		respose.Code = 201
 		respose.Msg = "创建失败"
-		return c.JSON(http.StatusOK, respose)
+		c.JSON(http.StatusOK, respose)
 	}
 
-	return c.JSON(http.StatusOK, respose)
+	c.JSON(http.StatusOK, respose)
 }
 
-func CreateVideoCover(c echo.Context) error {
+func CreateVideoCover(c *gin.Context) {
 	scripts.VideoFrameToPng()
-	return c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusOK, nil)
 }

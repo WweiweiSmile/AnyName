@@ -3,14 +3,13 @@ package openai
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 
-	"github.com/labstack/echo"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -19,8 +18,8 @@ type OpenAiContent struct {
 }
 
 // 代理 处理函数
-func OpenaiHanddle(c echo.Context) error {
-	body, _ := ioutil.ReadAll(c.Request().Body)
+func OpenaiHanddle(c *gin.Context) {
+	body, _ := ioutil.ReadAll(c.Request.Body)
 	var content OpenAiContent
 	json.Unmarshal([]byte(string(body)), &content)
 
@@ -56,18 +55,17 @@ func OpenaiHanddle(c echo.Context) error {
 	defer resp.Close()
 	for {
 		res, error := resp.Recv()
-		if errors.Is(error, io.EOF) {
-			return c.String(http.StatusOK, "完成")
+		if error == io.EOF {
+			c.String(http.StatusOK, "完成")
 		}
 		if err != nil {
 			fmt.Println("请求chatgpt错误：", err.Error())
 		}
-		err := json.NewEncoder(c.Response()).Encode(res.Choices[0].Delta.Content)
+		err := json.NewEncoder(nil).Encode(res.Choices[0].Delta.Content)
 		if err != nil {
 			fmt.Println("流输出失败：", err.Error())
-			return c.String(http.StatusOK, "失败")
+			c.String(http.StatusOK, "失败")
 		}
 
 	}
-	// return c.String(http.StatusOK, resp.Choices[0].Message.Content)
 }

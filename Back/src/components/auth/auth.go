@@ -1,9 +1,8 @@
 package auth
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
-
-	"github.com/labstack/echo"
 )
 
 type Auth struct {
@@ -18,7 +17,7 @@ type AuthResponse struct {
 }
 
 // 验证身份
-func ValidateAuth(c echo.Context) error {
+func ValidateAuth(c *gin.Context) {
 	password := c.Param("password")
 	var response AuthResponse
 	if password == "qwqwqw797979" {
@@ -50,5 +49,5 @@ func ValidateAuth(c echo.Context) error {
 			Data: Auth{},
 		}
 	}
-	return c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, response)
 }

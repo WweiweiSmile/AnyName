@@ -1,15 +1,12 @@
 package user
 
-import "github.com/labstack/echo"
+import "github.com/gin-gonic/gin"
 
-func CrateUser(c echo.Context) error {
-	return nil
+func CrateUser(_ *gin.Context) {
 }
 
-func ModifyPassword(c echo.Context) error {
-	return nil
+func ModifyPassword(_ *gin.Context) {
 }
 
-func ModifyName(c echo.Context) error {
-	return nil
+func ModifyName(_ *gin.Context) {
 }

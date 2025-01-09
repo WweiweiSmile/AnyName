@@ -1,19 +1,19 @@
 package nas_os
 
-import "github.com/labstack/echo"
+import "github.com/gin-gonic/gin"
 
-func FilesInfo(c echo.Context) error {
-	return nil
+func FilesInfo(_ *gin.Context) {
+
 }
 
-func CreateDir(e echo.Context) error {
-	return nil
+func CreateDir(_ *gin.Context) {
+
 }
 
-func Upload(e echo.Context) error {
-	return nil
+func Upload(_ *gin.Context) {
+
 }
 
-func Download(e echo.Context) error {
-	return nil
+func Download(_ *gin.Context) {
+
 }
