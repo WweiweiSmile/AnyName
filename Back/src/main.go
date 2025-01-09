@@ -3,6 +3,7 @@ package main
 import (
 	"Back/src/components/auth"
 	"Back/src/components/openai"
+	"Back/src/components/user"
 	"Back/src/components/videoplay"
 
 	"github.com/labstack/echo"
@@ -12,6 +13,12 @@ import (
 
 func main() {
 	e := echo.New()
+
+	userRoutes := e.Group("/api/user")
+
+	userRoutes.POST("/create", user.CrateUser)
+	userRoutes.PUT("/modifyName", user.ModifyName)
+	userRoutes.PUT("/modifyPassword", user.ModifyPassword)
 
 	// 创建视频封面
 	e.POST("/api/videoCover", videoplay.CreateVideoCover)
