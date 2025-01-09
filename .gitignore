@@ -5,6 +5,7 @@
 /front/.pnp
 /front/.pnp.js
 /Back/src/pkg
+/Back/src/go_build_AnyName_main_go.exe
 
 # testing
 /coverage
