@@ -2,23 +2,30 @@ package main
 
 import (
 	"Back/src/components/auth"
+	"Back/src/components/nas_os"
 	"Back/src/components/openai"
 	"Back/src/components/user"
 	"Back/src/components/videoplay"
+	"os"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"os"
 )
 
 func main() {
 	e := echo.New()
 
 	userRoutes := e.Group("/api/user")
+	osRoutes := e.Group("/api/os")
 
 	userRoutes.POST("/create", user.CrateUser)
 	userRoutes.PUT("/modifyName", user.ModifyName)
 	userRoutes.PUT("/modifyPassword", user.ModifyPassword)
+
+	osRoutes.GET("/filesInfo", nas_os.FilesInfo)
+	osRoutes.GET("/download", nas_os.Download)
+	osRoutes.POST("/upload", nas_os.Upload)
+	osRoutes.POST("/CreateDir", nas_os.CreateDir)
 
 	// 创建视频封面
 	e.POST("/api/videoCover", videoplay.CreateVideoCover)
