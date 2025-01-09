@@ -1,4 +1,4 @@
-package main
+package scripts
 
 import (
 	"Back/src/components/utils"
@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func main() {
+func VideoFrameToPng() {
 
 	var dirPathArr = []string{"D:\\FFFF00/", "D:\\Heaven/"}
 

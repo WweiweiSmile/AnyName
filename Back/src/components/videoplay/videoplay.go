@@ -1,6 +1,7 @@
 package videoplay
 
 import (
+	"Back/src/components/scripts"
 	"Back/src/components/utils"
 	"encoding/json"
 	"fmt"
@@ -184,4 +185,9 @@ func CreateDir(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, respose)
+}
+
+func CreateVideoCover(c echo.Context) error {
+	scripts.VideoFrameToPng()
+	return c.JSON(http.StatusOK, nil)
 }

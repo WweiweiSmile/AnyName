@@ -13,6 +13,8 @@ import (
 func main() {
 	e := echo.New()
 
+	// 创建视频封面
+	e.POST("/api/videoCover", videoplay.CreateVideoCover)
 	// 获取所有文件信息
 	e.GET("/api/get/files/:path", videoplay.GetFilesInfo)
 	// 创建文件夹
@@ -26,15 +28,14 @@ func main() {
 	// openai接口代理
 	e.POST("/api/openai", openai.OpenaiHanddle)
 
-	    // 自定义日志输出
-			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-        Format: `{"time":"${time_rfc3339}","remote_ip":"${remote_ip}","host":"${host}",` +
-            `"method":"${method}","uri":"${uri}","status":${status},` +
-            `"error":"${error}","latency":${latency},"bytes_in":${bytes_in},` +
-            `"bytes_out":${bytes_out}}\n`,
-        Output: os.Stdout,
-    }))
-
+	// 自定义日志输出
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: `{"time":"${time_rfc3339}","remote_ip":"${remote_ip}","host":"${host}",` +
+			`"method":"${method}","uri":"${uri}","status":${status},` +
+			`"error":"${error}","latency":${latency},"bytes_in":${bytes_in},` +
+			`"bytes_out":${bytes_out}}\n`,
+		Output: os.Stdout,
+	}))
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
