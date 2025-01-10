@@ -1,5 +1,6 @@
 import { useRequest } from "ahooks";
 import { DefaultResponse, useAxios } from ".";
+import axios from 'axios';
 
 /**
  * 验证权限
@@ -25,3 +26,24 @@ export const useGetAuth = () => {
     }
   );
 };
+
+export const useLogin =  () => {
+  return useRequest(
+    async (username:string,password: string) => {
+      const res = await axios.post(
+        "/api/user/login",{
+          username: username,
+          password: password,
+        }
+      );
+      return res.data;
+    },
+    {
+      manual: true,
+      onError: (err) => {
+        console.log(err);
+      }
+    }
+  );
+
+}

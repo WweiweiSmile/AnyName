@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import { useLocalStorageState } from "ahooks";
-import { useGetAuth } from "../../apis/auth";
+import {useGetAuth, useLogin} from '../../apis/auth';
 import { useAuthContext } from "../../hooks";
 export type _Auth = {
   auth: "private" | "public";
@@ -11,39 +11,44 @@ export type _Auth = {
 };
 
 const Login: React.FC = () => {
+  const [username,setUsername] = useState("")
   const [password, setPassword] = useState("");
-  const { runAsync: getAuthRun } = useGetAuth();
+  const {runAsync} = useLogin()
   const { setUser } = useAuthContext();
   const navigate = useNavigate();
 
   // 登陆函数
-  const loginFn = async (pwd: string) => {
-    const res = await getAuthRun(pwd);
+  const loginFn = async ( username: string,pwd: string) => {
     try {
-      const { path } = res;
-      const auth = res.private ? "private" : "public";
-      if (auth) {
+     const user =  await runAsync(username, pwd);
         setUser({
-          auth: auth,
-          path: path,
+          auth: 'public',
+          path: user.path,
         });
         message.success("确认过眼神，你是对的人~~~~~~~");
         setTimeout(() => {
           navigate("/home");
         });
         return;
-      }
     } catch (err) {}
   };
 
   return (
     <div className="App">
       <Row justify={"center"} align={"middle"}>
-        <Col>输入暗号：</Col>
+        <Col>用户名：</Col>
         <Col xs={12}>
-          <Input onChange={(e) => setPassword(e?.target?.value)}></Input>
+          <Input onChange={(e) => setUsername(e?.target?.value)}></Input>
         </Col>
-        <Button onClick={() => loginFn(password)}>确认</Button>
+      </Row>
+      <Row justify={"center"} align={"middle"}>
+        <Col>密码：</Col>
+        <Col xs={12}>
+          <Input.Password  onChange={(e) => setPassword(e?.target?.value)}></Input.Password>
+        </Col>
+      </Row>
+      <Row justify="center" align="middle">
+        <Button onClick={() => loginFn(username,password)}>确认</Button>
       </Row>
     </div>
   );
