@@ -23,3 +23,13 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/.idea/.gitignore
+/Back/.idea/.gitignore
+/.idea/AnyName.iml
+/Back/.idea/Back.iml
+/.idea/dataSources.xml
+/.idea/modules.xml
+/Back/.idea/modules.xml
+/.idea/vcs.xml
+/Back/.idea/vcs.xml
+/Back/.idea/webResources.xml
