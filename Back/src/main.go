@@ -2,6 +2,7 @@ package main
 
 import (
 	"Back/src/components/auth"
+	"Back/src/components/directory"
 	"Back/src/components/nas_os"
 	"Back/src/components/openai"
 	"Back/src/components/user"
@@ -28,8 +29,14 @@ func main() {
 		userRoutes.PUT("/modifyPassword", user.ModifyPassword)
 	}
 
-	osRoutes := s.Group("/api/os")
+	directoryRoutes := s.Group("/api/directory")
+	{
+		directoryRoutes.POST("/create", func(context *gin.Context) {
+			directory.Create(context, conn)
+		})
+	}
 
+	osRoutes := s.Group("/api/os")
 	{
 		osRoutes.GET("/filesInfo", nas_os.FilesInfo)
 		osRoutes.GET("/download", nas_os.Download)
