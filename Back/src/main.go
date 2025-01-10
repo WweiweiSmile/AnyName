@@ -6,15 +6,21 @@ import (
 	"Back/src/components/openai"
 	"Back/src/components/user"
 	"Back/src/components/videoplay"
+	"Back/src/db"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
+	"log"
 )
 
 func main() {
 	s := gin.Default()
+	conn := db.Connect("root:Qw13101192533@tcp(localhost:3306)/nas_database")
 
 	userRoutes := s.Group("/api/user")
 	{
-		userRoutes.POST("/create", user.CrateUser)
+		userRoutes.POST("/create", func(context *gin.Context) {
+			user.CrateUser(context, conn)
+		})
 		userRoutes.PUT("/modifyName", user.ModifyName)
 		userRoutes.PUT("/modifyPassword", user.ModifyPassword)
 	}
@@ -44,6 +50,6 @@ func main() {
 
 	err := s.Run(":8080")
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
 }
