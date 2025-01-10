@@ -18,6 +18,9 @@ func main() {
 
 	userRoutes := s.Group("/api/user")
 	{
+		userRoutes.POST("/login", func(context *gin.Context) {
+			user.Login(context, conn)
+		})
 		userRoutes.POST("/create", func(context *gin.Context) {
 			user.CrateUser(context, conn)
 		})
