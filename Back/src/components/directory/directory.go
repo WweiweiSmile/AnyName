@@ -9,12 +9,12 @@ import (
 )
 
 type Directory struct {
-	Id         int    `json:"id"`
-	Name       string `json:"name"`
-	ParentId   int    `json:"parentId"`
-	UserId     int    `json:"userId"`
-	CreateTime time.Time
-	UpdateTime time.Time
+	Id         int       `json:"id"`
+	Name       string    `json:"name"`
+	ParentId   int       `json:"parentId"`
+	UserId     int       `json:"userId"`
+	CreateTime time.Time `json:"createTime"`
+	UpdateTime time.Time `json:"updateTime"`
 }
 
 func Create(c *gin.Context, conn *sql.DB) {
