@@ -1,7 +1,7 @@
-import { DefaultResponse, useAxios } from ".";
-import axios from "axios";
-import { useLocalStorageState, useRequest } from "ahooks";
-import { useAuthContext } from "../hooks";
+import {useAxios} from '.';
+import axios from 'axios';
+import {useRequest} from 'ahooks';
+
 /**
  * 文件上传函数
  * @returns
@@ -15,8 +15,7 @@ export const useFileUplaod = () => {
       formData.append("file", data.file);
       formData.append("path", data.path.join("_"));
       try {
-        const res = await axios.post("/api/savefile", formData);
-        return res;
+        return await axios.post("/api/savefile", formData);
       } catch (err) {
         console.log(err);
       }
@@ -46,12 +45,9 @@ export const get = async () => {
  * @returns
  */
 export const useGetFileInfos = () => {
-  const { user } = useAuthContext();
   return useRequest(
     async (path: string[]) => {
-      const res = await axios.get<FileInfo[]>(
-        "/api/get/files" + `/${path.join("_")}`
-      );
+      const res = await axios.get<FileInfo[]>(`/api/get/files/${path.join("_")}`);
       return res.data;
     },
     {
@@ -66,7 +62,7 @@ export const useGetFileInfos = () => {
 export const useCreateDir = () => {
   return useRequest(
     async (path: string[]) => {
-      const res = await axios.get("/api/createDir" + `/${path.join("_")}`);
+      const res = await axios.get(`/api/createDir/${path.join("_")}`);
       return res.data;
     },
     {

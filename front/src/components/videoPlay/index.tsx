@@ -1,24 +1,21 @@
-import React, { useRef, useState } from "react";
-import Video from "react-video-renderer";
-import { Button, Col, Row, Space } from "antd";
-import VideoProgress from "./children/Progress";
-import "./index.scss";
-import { useParams, useLocation } from "react-router-dom";
-import { useLocalStorageState } from "ahooks";
-import {downloadFile} from '../../utils/utils'
-import Icon, {PauseCircleOutlined} from '@ant-design/icons';
-import {User} from '../Login';
+import React, {useRef, useState} from 'react';
+import Video from 'react-video-renderer';
+import {Button, Row, Space} from 'antd';
+import VideoProgress from './children/Progress';
+import './index.scss';
+import {useLocation} from 'react-router-dom';
+import {downloadFile} from '../../utils/utils';
+import {PauseCircleOutlined} from '@ant-design/icons';
+
 type VideoPlayPropsType = {
   open: boolean;
   onClose: VoidFunction;
   src: string;
 };
 const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
-  const { open, onClose } = props;
+  const { open } = props;
   const [toolbarVisible, setToolbarVisible] = useState(false);
   const location = useLocation();
-  const { fileName } = useParams();
-  const [state] = useLocalStorageState<User>("user");
   const timouter = useRef<NodeJS.Timeout[]>([]);
   const [pause,setPause] = useState(true);
   //FIXME： 视频封面请求地址的端口是写死的

@@ -13,7 +13,7 @@ const Index: React.FC = () => {
     if (!!user && location.pathname === "/") {
       navigate("/home");
     }
-  }, [location.pathname]);
+  }, [location.pathname,navigate,user]);
 
   return <>{outlet}</>;
 };

@@ -1,7 +1,5 @@
-import { useRequest } from "ahooks";
-import axios from "axios";
-import { useState } from "react";
-import { useAxios } from ".";
+import axios from 'axios';
+import {useState} from 'react';
 
 export const useGetAnswer = () => {
   // const axios = useAxios();
@@ -25,7 +23,7 @@ export const useGetAnswer = () => {
           .then((response) => {
             // return res.data as string;
             const str = response.data as string;
-            str.replace(/\"|\'/g, "");
+            str.replace(/"|'/g, "");
             // str.replaceAll('"""', "");
             // str.replaceAll('"\n"', "");
             setData(str);

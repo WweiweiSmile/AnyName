@@ -1,4 +1,4 @@
-import React, { createContext, Key, ReactNode, useRef, useState } from "react";
+import React, {createContext, Key, ReactNode, useRef, useState} from 'react';
 
 interface CacheContainerProps {
   children: ReactNode;
@@ -12,12 +12,12 @@ interface CacheComponent {
   status: CacheStatus;
 }
 
-interface CacheContainerContext {
+interface _CacheContainerContext {
   state: Record<string, CacheComponent>;
   appendElement: (key: Key, element: ReactNode) => void;
 }
 
-export const CacheContainerContext = createContext<CacheContainerContext>({
+export const CacheContainerContext = createContext<_CacheContainerContext>({
   state: {},
   appendElement: (key, element) => {
     console.log(key, element);
@@ -45,7 +45,7 @@ const CacheContainer: React.FC<CacheContainerProps> = (props) => {
   };
 
   // 添加 缓存组件
-  const appendElement: CacheContainerContext["appendElement"] = (
+  const appendElement: _CacheContainerContext["appendElement"] = (
     key,
     element
   ) => {

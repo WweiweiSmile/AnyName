@@ -1,8 +1,6 @@
-import { useRequest } from "ahooks";
-import {DefaultResponse, http, useAxios} from '.';
-import axios from 'axios';
+import {useRequest} from 'ahooks';
+import {DefaultResponse, http} from '.';
 import {User} from '../components/Login';
-
 
 export const useLogin =  () => {
   return useRequest(

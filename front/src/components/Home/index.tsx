@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuthContext()!;
   const {user} = useAuthContext()
-  const [parentDirIds, setParentDirIds] = useState<number[]>([0]);
+  const [parentDirIds] = useState<number[]>([0]);
   const {run,data: directoryList} = directoryApi.userList()
 
   useEffect(() => {

@@ -1,13 +1,7 @@
-import React, {
-  useContext,
-  createContext,
-  ReactNode,
-  useState,
-  useEffect,
-} from 'react';
+import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import {useLocalStorageState} from 'ahooks';
 import {message} from 'antd';
-import Login, {User} from '../components/Login';
+import {User} from '../components/Login';
 
 export type AuthContextType = {
   user: User | null;
@@ -38,7 +32,7 @@ const WithAuth: React.FC<WithAuthProps> = ({children}) => {
     ) {
       window.location.href = '/login';
     }
-  }, []);
+  }, [local]);
 
   // 权限值
   const authValue: AuthContextType = {
