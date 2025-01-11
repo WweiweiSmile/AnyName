@@ -15,7 +15,7 @@ import (
 
 func main() {
 	s := gin.Default()
-	conn := db.Connect("root:Qw13101192533@tcp(localhost:3306)/nas_database")
+	conn := db.Connect("root:Qw13101192533@tcp(localhost:3306)/nas_database?parseTime=true")
 
 	userRoutes := s.Group("/api/user")
 	{
@@ -33,6 +33,9 @@ func main() {
 	{
 		directoryRoutes.POST("/create", func(context *gin.Context) {
 			directory.Create(context, conn)
+		})
+		directoryRoutes.GET("/list", func(context *gin.Context) {
+			directory.List(context, conn)
 		})
 		directoryRoutes.POST("/modify", func(context *gin.Context) {
 			directory.Modify(context, conn)

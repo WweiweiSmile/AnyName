@@ -63,5 +63,33 @@ func Delete(c *gin.Context, conn *sql.DB) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "目录删除成功"})
+}
 
+func List(c *gin.Context, conn *sql.DB) {
+	userId := c.Query("userId")
+	parentId := c.Query("parentId")
+
+	t := `select * from directory where  user_id=? and parent_id=?`
+
+	rows, err := conn.Query(t, userId, parentId)
+	if err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusBadGateway, gin.H{"code": 500, "message": "查询时发生了错误"})
+		return
+	}
+
+	defer rows.Close()
+
+	var dirs []Directory
+	for rows.Next() {
+		var dir Directory
+		if err := rows.Scan(&dir.Id, &dir.Name, &dir.ParentId, &dir.UserId, &dir.CreateTime, &dir.UpdateTime); err != nil {
+			log2.Error(err)
+			c.JSON(http.StatusBadGateway, gin.H{"code": 500, "message": "转换数据时发生了错误"})
+			return
+		}
+		dirs = append(dirs, dir)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "ok", "data": dirs})
 }
