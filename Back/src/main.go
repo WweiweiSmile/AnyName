@@ -34,6 +34,9 @@ func main() {
 		directoryRoutes.POST("/create", func(context *gin.Context) {
 			directory.Create(context, conn)
 		})
+		directoryRoutes.POST("/modify", func(context *gin.Context) {
+			directory.Modify(context, conn)
+		})
 	}
 
 	osRoutes := s.Group("/api/os")
