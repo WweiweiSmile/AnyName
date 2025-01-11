@@ -7,8 +7,8 @@ export interface Directory {
   name: string; // Name of the directory
   parentId: number; // Identifier of the parent directory
   userId: number; // Identifier of the user associated with the directory
-  createTime: Date; // Timestamp for when the directory was created
-  updateTime: Date; // Timestamp for when the directory was last updated
+  createTime: string; // Timestamp for when the directory was created
+  updateTime: string; // Timestamp for when the directory was last updated
 }
 
 const useList = () => {
@@ -18,9 +18,9 @@ const useList = () => {
         parentId, userId,
       },
     }));
-    return res.data;
+    return res?.data?.data;
   },{
-    manual:true
+    manual:true,
   });
 };
 

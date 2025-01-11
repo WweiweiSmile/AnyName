@@ -11,15 +11,13 @@ const Home: React.FC = () => {
   const { logout } = useAuthContext()!;
   const {user} = useAuthContext()
   const [parentDirIds, setParentDirIds] = useState<number[]>([0]);
-  const {run,data} = directoryApi.userList()
+  const {run,data: directoryList} = directoryApi.userList()
 
   useEffect(() => {
     if(user){
-      run(parentDirIds[parentDirIds.length - 1],user.id)
+       run(parentDirIds[parentDirIds.length - 1],user.id)
     }
   },[run])
-
-  console.log("data->",data);
 
   return (
     <Content style={{ width: "90%", margin: "auto" }}>
@@ -56,7 +54,7 @@ const Home: React.FC = () => {
 
       <Row gutter={[20, 20]}>
         {
-          data?.data?.map(item => {
+          directoryList?.map(item => {
             return <FileItem key={item.id} directory={item} isDir={true} />
           })
         }

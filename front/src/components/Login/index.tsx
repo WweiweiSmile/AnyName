@@ -15,7 +15,6 @@ export type User = {
 const Login: React.FC = () => {
   const [username,setUsername] = useState("")
   const [password, setPassword] = useState("");
-  // const [user,setUser] = useLocalStorageState<User>("user")
   const {runAsync} = useLogin()
   const { setUser } = useAuthContext();
   const navigate = useNavigate();

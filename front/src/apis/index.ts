@@ -2,13 +2,13 @@ import { message } from "antd";
 import axios from "axios";
 
 
-export interface DefaultResponse {
+export interface DefaultResponse<T> {
   code: number;
   message: string;
-  data: unknown;
+  data: T;
 }
 
-export interface ListResponse<T> extends DefaultResponse {
+export interface ListResponse<T> extends DefaultResponse<any> {
   data: T[];
 }
 
@@ -30,7 +30,7 @@ http.interceptors.response.use(
     } catch (err) {
       throw err;
     }
-    return res.data;
+    return res;
   },
   (err) => {
     console.error('err->',err);
