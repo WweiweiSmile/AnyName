@@ -32,7 +32,7 @@ export const get = async () => {
   return res;
 };
 
-type FileInfo = {
+ type FileInfo = {
   name: string;
   size: number;
   mode: number;

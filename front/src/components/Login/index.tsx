@@ -1,9 +1,7 @@
 import { Button, Input, Row, Col, message } from "antd";
-import { useEffect, useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMemo } from "react";
-import { useLocalStorageState } from "ahooks";
-import {useGetAuth, useLogin} from '../../apis/auth';
+import { useLogin} from '../../apis/auth';
 import { useAuthContext } from "../../hooks";
 export type _Auth = {
   auth: "private" | "public";

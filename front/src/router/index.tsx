@@ -2,7 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouteObject, Router } from "react-router-dom";
 import Login from "../components/Login";
 import VideoPlay from "../components/videoPlay";
-import FileUpload from "../components/FileList";
+import FileUpload from "../components/file_list";
 import Home from "../components/Home";
 import Index from "../components/index";
 import OpenAi from "../components/openai";

@@ -1,16 +1,26 @@
 import { Button, Col, Row } from "antd";
 import { Content } from "antd/es/layout/layout";
-import React, { ReactNode } from "react";
+import React, {useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../hooks/auth";
-import { useOutlet } from "react-router-dom";
+import { useAuthContext } from '../../hooks';
+import directoryApi from '../../apis/directory';
+import FileItem from '../file_list/fileItem';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuthContext()!;
-  const outlet = useOutlet();
+  // const outlet = useOutlet();
+  const {run,data} = directoryApi.userList()
+
+  useEffect(() => {
+    run(0,1)
+  },[run])
+
+  console.log("data->",data);
+
   return (
     <Content style={{ width: "90%", margin: "auto" }}>
+
       <Row align={"middle"} justify={"center"} gutter={[20, 20]}>
         <Col>
           <Button
@@ -40,7 +50,15 @@ const Home: React.FC = () => {
           </Button>
         </Col>
       </Row>
-      {outlet}
+
+      <Row gutter={[20, 20]}>
+        {
+          data?.data?.data?.map(item => {
+            return <FileItem key={item.id} directory={item} isDir={true} />
+          })
+        }
+      </Row>
+
     </Content>
   );
 };
