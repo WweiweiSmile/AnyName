@@ -37,6 +37,9 @@ func main() {
 		directoryRoutes.POST("/modify", func(context *gin.Context) {
 			directory.Modify(context, conn)
 		})
+		directoryRoutes.DELETE("/delete/:id", func(context *gin.Context) {
+			directory.Delete(context, conn)
+		})
 	}
 
 	osRoutes := s.Group("/api/os")

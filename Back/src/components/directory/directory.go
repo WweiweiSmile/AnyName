@@ -52,3 +52,16 @@ func Modify(c *gin.Context, conn *sql.DB) {
 
 	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "目录名更改成功"})
 }
+
+func Delete(c *gin.Context, conn *sql.DB) {
+	id := c.Param("id")
+	t := `delete from nas_database.directory where id=?`
+	if _, err := conn.Query(t, id); err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "目录删除失败"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "目录删除成功"})
+
+}
