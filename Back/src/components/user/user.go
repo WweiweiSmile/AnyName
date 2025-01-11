@@ -9,6 +9,7 @@ import (
 )
 
 type User struct {
+	Id       int    `json:"id"`
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -38,25 +39,28 @@ func Login(c *gin.Context, conn *sql.DB) {
 		return
 	}
 
-	t := `select username,name,avatar from user where username=? and password=?`
+	t := `select id,username,name,avatar from user where username=? and password=?`
 
 	rows, err := conn.Query(t, user.Username, user.Password)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "用户或者密码错误"})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "用户或者密码错误"})
 		return
 	}
+	defer rows.Close()
 
-	for rows.Next() {
+	if rows.Next() {
 		var user User
-		err := rows.Scan(&user.Name, &user.Username, &user.Avatar)
+		err := rows.Scan(&user.Id, &user.Name, &user.Username, &user.Avatar)
 
 		if err != nil {
 			log2.Error(err)
-			c.JSON(http.StatusBadRequest, gin.H{"message": "用户登录获取用户信息失败"})
+			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "用户登录获取用户信息失败"})
 			return
 		}
-		c.JSON(http.StatusOK, user)
-		return
+
+		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "ok", "data": user})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "用户或者密码错误"})
 	}
 
 }

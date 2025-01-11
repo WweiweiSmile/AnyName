@@ -5,9 +5,9 @@ import VideoProgress from "./children/Progress";
 import "./index.scss";
 import { useParams, useLocation } from "react-router-dom";
 import { useLocalStorageState } from "ahooks";
-import { _Auth } from "../Login";
 import {downloadFile} from '../../utils/utils'
 import Icon, {PauseCircleOutlined} from '@ant-design/icons';
+import {User} from '../Login';
 type VideoPlayPropsType = {
   open: boolean;
   onClose: VoidFunction;
@@ -18,7 +18,7 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
   const [toolbarVisible, setToolbarVisible] = useState(false);
   const location = useLocation();
   const { fileName } = useParams();
-  const [state] = useLocalStorageState<_Auth>("_auth");
+  const [state] = useLocalStorageState<User>("user");
   const timouter = useRef<NodeJS.Timeout[]>([]);
   const [pause,setPause] = useState(true);
   //FIXME： 视频封面请求地址的端口是写死的

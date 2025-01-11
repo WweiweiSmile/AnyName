@@ -1,22 +1,19 @@
 import { message } from "antd";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
-export interface ListResponse<T> {
-  map(): import("react").ReactNode;
-  code: number;
-  message: string;
-  data: T[];
-}
 
 export interface DefaultResponse {
   code: number;
-  msg: string;
+  message: string;
   data: unknown;
 }
 
-export const http = axios.create();
-http.interceptors.request.use()
+export interface ListResponse<T> extends DefaultResponse {
+  data: T[];
+}
 
+
+export const http = axios.create();
 // 添加响应拦截器
 http.interceptors.response.use(
   (res) => {
@@ -33,10 +30,12 @@ http.interceptors.response.use(
     } catch (err) {
       throw err;
     }
-    return res;
+    return res.data;
   },
   (err) => {
-    message.error((err as Error).message);
+    console.error('err->',err);
+    message.error(err.response.data.message);
+    throw err.response.data.message;
   }
 );
 

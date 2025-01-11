@@ -13,11 +13,12 @@ export interface Directory {
 
 const useList = () => {
   return useRequest(async (parentId: number, userId: number)   => {
-    return await http.get<ListResponse<Directory>>('/api/directory/list', {
+    const res = (await http.get<ListResponse<Directory>>('/api/directory/list', {
       params: {
         parentId, userId,
       },
-    });
+    }));
+    return res.data;
   },{
     manual:true
   });

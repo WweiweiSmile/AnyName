@@ -18,14 +18,10 @@ import {
 import { UploadFile } from "antd/es/upload";
 import {
   useFileUplaod,
-  get,
   useGetFileInfos,
   useCreateDir,
 } from "../../apis/file";
-import { useLocalStorageState, useMount } from "ahooks";
-import { _Auth } from "../Login";
 import { useNavigate } from "react-router-dom";
-import CacheComponent from "../Cache/CacheComponent";
 import { useAuthContext } from "../../hooks";
 const { Meta } = Card;
 const { Text } = Typography;
@@ -46,11 +42,10 @@ const getSizeSuffix = (number: number) => {
 
 const FileUpload: React.FC = (props) => {
   const { user } = useAuthContext();
-  const isPrivate = user.auth === "private";
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const navigate = useNavigate();
   const [dirName, setDirName] = useState("");
-  const [dirPath, setDirPath] = useState<string[]>([...(user.path || [])]);
+  const [dirPath, setDirPath] = useState<string[]>([]);
   const [createDirOpen, setCreateDirOpen] = useState(false);
   const { runAsync: fileUPloadRun } = useFileUplaod();
   const {

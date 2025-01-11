@@ -4,62 +4,54 @@ import React, {
   ReactNode,
   useState,
   useEffect,
-} from "react";
-import { useLocalStorageState } from "ahooks";
-import { message } from "antd";
-import Login from "../components/Login";
-export type AuthType = "private" | "public" | "logout";
-export type _Auth = {
-  auth: AuthType;
-  path: string[];
-};
+} from 'react';
+import {useLocalStorageState} from 'ahooks';
+import {message} from 'antd';
+import Login, {User} from '../components/Login';
+
 export type AuthContextType = {
-  user: _Auth;
-  setUser: (auth: _Auth) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
   logout: VoidFunction;
 };
 
 export const AuthContext = createContext<AuthContextType>({
-  user: {
-    path: [],
-    auth: "logout",
-  },
+  user: null,
   logout: () => {},
-  setUser: (auth) => {},
+  setUser: () => {},
 });
+
 export const useAuthContext = () => useContext(AuthContext);
+
 
 type WithAuthProps = {
   children: ReactNode;
 };
-const WithAuth: React.FC<WithAuthProps> = ({ children }) => {
-  const [local, setLocal] = useLocalStorageState<_Auth>("_auth");
-  const [user, setUser] = useState<_Auth>(local);
+const WithAuth: React.FC<WithAuthProps> = ({children}) => {
+  const [local, setLocal] = useLocalStorageState<User | null>('user');
+  const [user, setUser] = useState<User | null>(local);
   // 如果没有权限,并且不是登陆页面, 跳转到 登陆页面
   useEffect(() => {
     if (
-      local?.auth !== "private" &&
-      local?.auth !== "public" &&
-      window.location.pathname !== "/login"
+      !!local &&
+      window.location.pathname !== '/login'
     ) {
-      window.location.href = "/login";
+      window.location.href = '/login';
     }
   }, []);
+
   // 权限值
   const authValue: AuthContextType = {
     user: user,
-    setUser: (auth) => {
-      setUser(auth);
-      setLocal(auth);
+    setUser: (user) => {
+      setUser(user);
+      setLocal(user);
     },
     logout: () => {
-      const defaultUser: _Auth = {
-        auth: "logout",
-        path: [],
-      };
+      const defaultUser: User | null = null;
       setUser(defaultUser);
       setLocal(defaultUser);
-      message.success("退出成功！");
+      message.success('退出成功！');
       window.location.reload();
     },
   };

@@ -1,6 +1,6 @@
 import { Button, Col, Row } from "antd";
 import { Content } from "antd/es/layout/layout";
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from '../../hooks';
 import directoryApi from '../../apis/directory';
@@ -9,11 +9,14 @@ import FileItem from '../file_list/fileItem';
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuthContext()!;
-  // const outlet = useOutlet();
+  const {user} = useAuthContext()
+  const [parentDirIds, setParentDirIds] = useState<number[]>([0]);
   const {run,data} = directoryApi.userList()
 
   useEffect(() => {
-    run(0,1)
+    if(user){
+      run(parentDirIds[parentDirIds.length - 1],user.id)
+    }
   },[run])
 
   console.log("data->",data);
@@ -53,7 +56,7 @@ const Home: React.FC = () => {
 
       <Row gutter={[20, 20]}>
         {
-          data?.data?.data?.map(item => {
+          data?.data?.map(item => {
             return <FileItem key={item.id} directory={item} isDir={true} />
           })
         }

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate, useOutlet, useLocation } from "react-router-dom";
-import { _Auth } from "./Login";
 import { useAuthContext } from "../hooks";
 
 const Index: React.FC = () => {
@@ -11,7 +10,7 @@ const Index: React.FC = () => {
 
   useEffect(() => {
     // 已登录，当前页面 === '/'，跳转到home页面
-    if (user.auth !== "logout" && location.pathname === "/") {
+    if (!!user && location.pathname === "/") {
       navigate("/home");
     }
   }, [location.pathname]);

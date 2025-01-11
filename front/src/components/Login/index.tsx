@@ -3,32 +3,34 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLogin} from '../../apis/auth';
 import { useAuthContext } from "../../hooks";
-export type _Auth = {
-  auth: "private" | "public";
-  path: string[];
+
+export type User = {
+  id: number;
+  name: string;
+  username: string;
+  password: string;
+  avatar: string;
 };
 
 const Login: React.FC = () => {
   const [username,setUsername] = useState("")
   const [password, setPassword] = useState("");
+  // const [user,setUser] = useLocalStorageState<User>("user")
   const {runAsync} = useLogin()
   const { setUser } = useAuthContext();
   const navigate = useNavigate();
 
   // 登陆函数
   const loginFn = async ( username: string,pwd: string) => {
-    try {
      const user =  await runAsync(username, pwd);
-        setUser({
-          auth: 'public',
-          path: user.path,
-        });
-        message.success("确认过眼神，你是对的人~~~~~~~");
-        setTimeout(() => {
-          navigate("/home");
-        });
-        return;
-    } catch (err) {}
+     if(!!user){
+       setUser(user);
+       message.success("确认过眼神，你是对的人~~~~~~~");
+       setTimeout(() => {
+         navigate("/home");
+       },10);
+       return;
+     }
   };
 
   return (

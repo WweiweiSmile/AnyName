@@ -1,6 +1,7 @@
 import { useRequest } from "ahooks";
-import { DefaultResponse, useAxios } from ".";
+import {DefaultResponse, http, useAxios} from '.';
 import axios from 'axios';
+import {User} from '../components/Login';
 
 /**
  * 验证权限
@@ -12,31 +13,23 @@ interface AuthResponse extends DefaultResponse {
     path: string[];
   };
 }
-export const useGetAuth = () => {
-  const axios = useAxios();
-  return useRequest(
-    async (password: string) => {
-      const res: AuthResponse = await axios.get(
-        "/api/auth/" + `${password || "not"}`
-      );
-      return res.data;
-    },
-    {
-      manual: true,
-    }
-  );
-};
 
 export const useLogin =  () => {
   return useRequest(
     async (username:string,password: string) => {
-      const res = await axios.post(
-        "/api/user/login",{
-          username: username,
-          password: password,
-        }
-      );
-      return res.data;
+      try{
+        const res = await http.post<User>(
+          "/api/user/login",{
+            username: username,
+            password: password,
+          }
+        );
+        return res.data;
+      }catch (err){
+        console.error(err);
+        return null
+      }
+
     },
     {
       manual: true,
