@@ -24,9 +24,24 @@ func Create(c *gin.Context, conn *sql.DB) {
 		c.JSON(http.StatusBadGateway, gin.H{"code": 400, "message": "无法获取目录信息"})
 		return
 	}
+
+	queryStr := `select count(*) from directory where name = ? and  parent_id = ? and user_id = ?`
+	var count int
+	err := conn.QueryRow(queryStr, dir.Name, dir.ParentId, dir.UserId).Scan(&count)
+	if err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusBadGateway, gin.H{"code": 500, "message": "查询目录是否存在失败"})
+		return
+	}
+
+	if count > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "目录已存在"})
+		return
+	}
+
 	t := `insert into directory (name, parent_id, user_id) values (?, ?, ?)`
 
-	if _, err := conn.Query(t, dir.Name, dir.ParentId, dir.UserId); err != nil {
+	if _, err := conn.Exec(t, dir.Name, dir.ParentId, dir.UserId); err != nil {
 		log2.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "目录添加失败"})
 		return

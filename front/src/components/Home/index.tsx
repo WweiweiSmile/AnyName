@@ -32,7 +32,7 @@ const Home: React.FC = () => {
       closeCreateDirModal()
       refreshList()
     }catch (e){
-      message.error("目录创建失败")
+      console.error(e);
     }
   }
 
