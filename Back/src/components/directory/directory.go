@@ -24,7 +24,7 @@ func Create(c *gin.Context, conn *sql.DB) {
 		c.JSON(http.StatusBadGateway, gin.H{"code": 400, "message": "无法获取目录信息"})
 		return
 	}
-	t := `insert into directory ( name, parent_id, user_id) values (?, ?, ?)`
+	t := `insert into directory (name, parent_id, user_id) values (?, ?, ?)`
 
 	if _, err := conn.Query(t, dir.Name, dir.ParentId, dir.UserId); err != nil {
 		log2.Error(err)
