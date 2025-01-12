@@ -16,14 +16,6 @@ import (
 	"os"
 )
 
-type DBConfig struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Host     string `json:"host"`
-	Port     string `json:"port"`
-	Name     string `json:"name"`
-}
-
 func main() {
 	s := gin.Default()
 	file, err := os.Open("config.json")
@@ -33,7 +25,7 @@ func main() {
 	defer file.Close()
 
 	decoder := json.NewDecoder(file)
-	config := DBConfig{}
+	config := db.Config{}
 	err = decoder.Decode(&config)
 	if err != nil {
 		log.Fatal(err)
