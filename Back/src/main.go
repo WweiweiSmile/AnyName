@@ -8,14 +8,39 @@ import (
 	"Back/src/components/user"
 	"Back/src/components/videoplay"
 	"Back/src/db"
+	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"os"
 )
+
+type DBConfig struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Host     string `json:"host"`
+	Port     string `json:"port"`
+	Name     string `json:"name"`
+}
 
 func main() {
 	s := gin.Default()
-	conn := db.Connect("root:Qw13101192533@tcp(localhost:3306)/nas_database?parseTime=true")
+	file, err := os.Open("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	config := DBConfig{}
+	err = decoder.Decode(&config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", config.Username, config.Password, config.Host, config.Port, config.Name)
+	conn := db.Connect(connStr)
 
 	userRoutes := s.Group("/api/user")
 	{
@@ -67,7 +92,7 @@ func main() {
 	// openai接口代理
 	s.POST("/api/openai", openai.OpenaiHanddle)
 
-	err := s.Run(":8080")
+	err = s.Run(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}

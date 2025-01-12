@@ -43,6 +43,7 @@ func Login(c *gin.Context, conn *sql.DB) {
 
 	rows, err := conn.Query(t, user.Username, user.Password)
 	if err != nil {
+		log2.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "用户或者密码错误"})
 		return
 	}
