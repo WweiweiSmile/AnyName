@@ -24,8 +24,23 @@ const useList = () => {
   });
 };
 
+const useCreate = () => {
+  return useRequest(async (parentId: number, userId: number,name: string)   => {
+    const res = (await http.post<ListResponse<Directory>>('/api/directory/create', {
+      "userId":userId,
+      "parentId":parentId,
+      "name": name,
+    }));
+
+    return res?.data?.data;
+  },{
+    manual:true,
+  });
+};
+
 const directoryApi = {
-  userList: useList,
+  useList,
+  useCreate
 }
 
 export default directoryApi;
