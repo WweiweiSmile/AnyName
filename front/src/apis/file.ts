@@ -56,8 +56,6 @@ export const useList = () => {
           },
         });
 
-        console.log("file: useList res->",res);
-
         return res?.data?.data;
       } catch (err) {
         console.log(err);

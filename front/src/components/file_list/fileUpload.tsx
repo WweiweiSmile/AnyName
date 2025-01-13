@@ -14,8 +14,6 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const {user} = useAuthContext();
 
-  console.log('fileList', fileList);
-
   const onUpload = async () => {
     try {
       const [file, ...newFiles] = fileList;

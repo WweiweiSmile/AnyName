@@ -27,12 +27,10 @@ const Home: React.FC = () => {
   const {runAsync: runEdit} = directoryApi.useEdit();
   const {runAsync: runDelete} = directoryApi.useDelete();
 
-  console.log('fileList->',fileList);
-
   useEffect(() => {
     runList(parentDirs[parentDirs.length - 1].id, user?.id!);
     runListFile(user?.id!, parentDirs[parentDirs.length - 1].id);
-  }, [runList,runListFile]);
+  }, [runList, runListFile]);
 
   const openCreateDirModal = () => {setCreateDirVisible(true);};
   const closeCreateDirModal = () => {setCreateDirVisible(false);};
@@ -79,15 +77,18 @@ const Home: React.FC = () => {
     openEditDirModal();
   };
 
-  const onView = (item: Directory) => () => {
-    setParentDirs([...parentDirs, item]);
-    runList(item.id, user?.id!);
+  const onView = (directory: Directory) => () => {
+    setParentDirs([...parentDirs, directory]);
+    runList(directory.id, user?.id!);
+    runListFile(user?.id!, directory.id);
   };
 
   const jumpToDirectoryDeep = (index: number) => () => {
     const newParentDirs = parentDirs.slice(0, index + 1);
+    const currentDir = newParentDirs[newParentDirs.length - 1];
     setParentDirs(newParentDirs);
-    runList(newParentDirs[newParentDirs.length - 1].id, user?.id!);
+    runList(currentDir.id, user?.id!);
+    runListFile(user?.id!, currentDir.id);
   };
 
   return (

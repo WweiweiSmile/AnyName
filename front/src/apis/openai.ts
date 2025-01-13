@@ -28,7 +28,6 @@ export const useGetAnswer = () => {
             // str.replaceAll('"\n"', "");
             setData(str);
 
-            console.log("每一行：", str);
             // console.log("流式数据：", res);
 
             // setData(data + (res.data.data as string));

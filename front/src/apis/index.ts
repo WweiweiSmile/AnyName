@@ -18,7 +18,6 @@ export const http = axios.create();
 http.interceptors.response.use(
   (res) => {
     const { data } = res;
-    console.log('response', data);
     try {
       // 只有 code 为 200 的时候为成功，其他都是失败
       if (data.code !== 200) {
