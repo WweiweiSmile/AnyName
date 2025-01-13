@@ -100,9 +100,7 @@ const Home: React.FC = () => {
         <Col>
           <Button onClick={openCreateDirModal}>新建目录</Button>
         </Col>
-        <Col>
-          <FileUpload directoryId={parentDirs[parentDirs.length - 1].id}></FileUpload>
-        </Col>
+        <FileUpload directoryId={parentDirs[parentDirs.length - 1].id}></FileUpload>
       </Row>
 
       <Row>

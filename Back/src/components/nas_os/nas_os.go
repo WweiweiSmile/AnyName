@@ -37,10 +37,12 @@ func Upload(c *gin.Context, conn *sql.DB) {
 	}
 	directoryIdStr := c.PostForm("directoryId")
 	directoryId, err := strconv.ParseInt(directoryIdStr, 10, 64)
+	userIdStr := c.PostForm("userId")
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
 
 	if err != nil {
 		res.Code = 400
-		res.Message = "文件所属目录错误,缺少directoryId字段"
+		res.Message = "缺少directoryId或者userId字段"
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
@@ -93,10 +95,12 @@ func Upload(c *gin.Context, conn *sql.DB) {
 		Name:        file.Filename,
 		Type:        file2.GetFileSuffix(file.Filename),
 		DirectoryId: directoryId,
+		UserId:      userId,
 		Path:        filePath,
 		Size:        file.Size,
 		Cover:       coverPath,
 	}, conn)
+
 	if err != nil {
 		res.Code = 500
 		res.Message = "文件信息插入数据库失败"

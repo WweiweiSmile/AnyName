@@ -8,11 +8,12 @@ import {useRequest} from 'ahooks';
  */
 export const useFileUpload = () => {
   return useRequest(
-    async (data: { file: File; path:string,directoryId:number }) => {
+    async (data: { file: File; path:string,directoryId:number,userId:number }) => {
       const formData = new FormData();
       formData.append("file", data.file);
       formData.append("path", data.path);
       formData.append("directoryId", String(data.directoryId) )
+      formData.append("userId", String(data.userId) )
       try {
         const res = await http.post("/api/os/upload", formData);
         return res?.data?.data

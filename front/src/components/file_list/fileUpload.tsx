@@ -19,7 +19,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
   const onUpload = async () => {
     try {
       const [file, ...newFiles] = fileList;
-      await runFileUpload({file: file as any, path: user?.localPath!, directoryId});
+      await runFileUpload({file: file as any, path: user?.localPath!, directoryId,userId:user?.id!});
       message.success('文件上传成功');
       setFileList(newFiles);
     } catch (err) {
