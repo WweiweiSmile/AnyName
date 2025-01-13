@@ -1,4 +1,4 @@
-import {http, ListResponse} from './index';
+import {DefaultResponse, http, ListResponse} from './index';
 import {useRequest} from 'ahooks';
 
 
@@ -26,7 +26,7 @@ const useList = () => {
 
 const useCreate = () => {
   return useRequest(async (parentId: number, userId: number,name: string)   => {
-    const res = (await http.post<ListResponse<Directory>>('/api/directory/create', {
+    const res = (await http.post<DefaultResponse<Directory>>('/api/directory/create', {
       "userId":userId,
       "parentId":parentId,
       "name": name,
@@ -38,9 +38,23 @@ const useCreate = () => {
   });
 };
 
+const useEdit = () => {
+  return useRequest(async (id: number,name: string)   => {
+    const res = (await http.post<DefaultResponse<Directory>>('/api/directory/update', {
+      "id":id,
+      "name": name,
+    }));
+
+    return res?.data?.data;
+  },{
+    manual:true,
+  });
+};
+
 const directoryApi = {
   useList,
-  useCreate
+  useCreate,
+  useEdit
 }
 
 export default directoryApi;

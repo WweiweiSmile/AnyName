@@ -1,4 +1,4 @@
-import {EyeOutlined, FileTextFilled, FolderFilled} from '@ant-design/icons';
+import {EditOutlined, EyeOutlined, FileTextFilled, FolderFilled} from '@ant-design/icons';
 import {Card, Col, message, Typography} from 'antd';
 import React from 'react';
 import  {Directory} from "../../apis/directory";
@@ -10,10 +10,11 @@ const { Text } = Typography;
 interface FileItemProps {
   isDir: boolean;
   directory:Directory,
+  onEdit?: () => void,
 }
 
 const FileItem: React.FC<FileItemProps> = (props) => {
-  const {directory, isDir} = props;
+  const {directory, isDir,onEdit} = props;
   const navigate = useNavigate()
   const name = directory?.name;
 
@@ -57,6 +58,7 @@ const FileItem: React.FC<FileItemProps> = (props) => {
                 }
               }}
             />,
+            isDir ?  <EditOutlined onClick={onEdit}/> : undefined
           ]}
         >
           <Meta
