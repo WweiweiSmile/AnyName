@@ -2,36 +2,24 @@ package main
 
 import (
 	"Back/src/components/auth"
+	"Back/src/components/config"
 	"Back/src/components/directory"
+	"Back/src/components/file"
 	"Back/src/components/nas_os"
 	"Back/src/components/openai"
 	"Back/src/components/user"
 	"Back/src/components/videoplay"
 	"Back/src/db"
-	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	"os"
 )
 
 func main() {
 	s := gin.Default()
-	file, err := os.Open("config.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 
-	decoder := json.NewDecoder(file)
-	config := db.Config{}
-	err = decoder.Decode(&config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", config.Username, config.Password, config.Host, config.Port, config.Name)
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", config.Config.DBUsername, config.Config.DBPassword, config.Config.DBHost, config.Config.DBPort, config.Config.DBName)
 	conn := db.Connect(connStr)
 
 	userRoutes := s.Group("/api/user")
@@ -54,11 +42,24 @@ func main() {
 		directoryRoutes.GET("/list", func(context *gin.Context) {
 			directory.List(context, conn)
 		})
-		directoryRoutes.POST("/modify", func(context *gin.Context) {
-			directory.Modify(context, conn)
+		directoryRoutes.POST("/update", func(context *gin.Context) {
+			directory.Update(context, conn)
 		})
 		directoryRoutes.DELETE("/delete/:id", func(context *gin.Context) {
 			directory.Delete(context, conn)
+		})
+	}
+
+	fileRoutes := s.Group("/api/file")
+	{
+		fileRoutes.GET("/list", func(context *gin.Context) {
+			file.List(context, conn)
+		})
+		fileRoutes.PUT("/update", func(context *gin.Context) {
+			file.Update(context, conn)
+		})
+		fileRoutes.DELETE("/delete/:id", func(context *gin.Context) {
+			file.Delete(context, conn)
 		})
 	}
 
@@ -66,7 +67,9 @@ func main() {
 	{
 		osRoutes.GET("/filesInfo", nas_os.FilesInfo)
 		osRoutes.GET("/download", nas_os.Download)
-		osRoutes.POST("/upload", nas_os.Upload)
+		osRoutes.POST("/upload", func(context *gin.Context) {
+			nas_os.Upload(context, conn)
+		})
 		osRoutes.POST("/CreateDir", nas_os.CreateDir)
 	}
 
@@ -84,7 +87,7 @@ func main() {
 	// openai接口代理
 	s.POST("/api/openai", openai.OpenaiHanddle)
 
-	err = s.Run(":8080")
+	err := s.Run(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}

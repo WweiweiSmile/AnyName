@@ -6,14 +6,18 @@ import (
 	log2 "github.com/labstack/gommon/log"
 	"log"
 	"net/http"
+	"time"
 )
 
 type User struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Avatar   string `json:"avatar"`
+	Id         int       `json:"id"`
+	Name       string    `json:"name"`
+	Username   string    `json:"username"`
+	Password   string    `json:"password"`
+	Avatar     string    `json:"avatar"`
+	LocalPath  string    `json:"localPath"`
+	CreateTime time.Time `json:"createIme"`
+	UpdateTime time.Time `json:"updateIme"`
 }
 
 func CrateUser(c *gin.Context, conn *sql.DB) {
@@ -39,7 +43,7 @@ func Login(c *gin.Context, conn *sql.DB) {
 		return
 	}
 
-	t := `select id,username,name,avatar from user where username=? and password=?`
+	t := `select id,username,name,avatar,local_path from user where username=? and password=?`
 
 	rows, err := conn.Query(t, user.Username, user.Password)
 	if err != nil {
@@ -51,7 +55,7 @@ func Login(c *gin.Context, conn *sql.DB) {
 
 	if rows.Next() {
 		var user User
-		err := rows.Scan(&user.Id, &user.Name, &user.Username, &user.Avatar)
+		err := rows.Scan(&user.Id, &user.Name, &user.Username, &user.Avatar, &user.LocalPath)
 
 		if err != nil {
 			log2.Error(err)

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Breadcrumb, Button, Card, Col, Input, message, Popover, Row, Space, Typography, Upload} from 'antd';
 import {EyeOutlined, FileTextFilled, FolderFilled} from '@ant-design/icons';
 import {UploadFile} from 'antd/es/upload';
-import {useCreateDir, useFileUplaod, useGetFileInfos} from '../../apis/file';
+import {useCreateDir, useGetFileInfos} from '../../apis/file';
 import {useNavigate} from 'react-router-dom';
 
 const {Meta} = Card;
@@ -27,7 +27,7 @@ const FileUpload: React.FC = () => {
   const [dirName, setDirName] = useState('');
   const [dirPath, setDirPath] = useState<string[]>([]);
   const [createDirOpen, setCreateDirOpen] = useState(false);
-  const {runAsync: fileUPloadRun} = useFileUplaod();
+  // const {runAsync: runFileUpload} = fileApi.useUpload();
   const {
     data: fileInfos,
     run: fileInfosRun,
@@ -51,10 +51,10 @@ const FileUpload: React.FC = () => {
         duration: 0,
         key: fileName,
       });
-      await fileUPloadRun({
-        file: file as any,
-        path: dirPath,
-      });
+      // await fileUPloadRun({
+      //   file: file as any,
+      //   path: dirPath,
+      // });
       setFileList(fileList?.filter((file) => file?.name !== fileName));
       message.destroy(fileName);
       message.success(`${fileName} -- 上传成功！`);

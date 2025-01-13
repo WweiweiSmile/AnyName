@@ -6,14 +6,6 @@ import (
 	"log"
 )
 
-type Config struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Host     string `json:"host"`
-	Port     string `json:"port"`
-	Name     string `json:"name"`
-}
-
 func Connect(addr string) *sql.DB {
 	db, err := sql.Open("mysql", addr)
 	if err != nil {
