@@ -66,7 +66,9 @@ func main() {
 	{
 		osRoutes.GET("/filesInfo", nas_os.FilesInfo)
 		osRoutes.GET("/download", nas_os.Download)
-		osRoutes.POST("/upload", nas_os.Upload)
+		osRoutes.POST("/upload", func(context *gin.Context) {
+			nas_os.Upload(context, conn)
+		})
 		osRoutes.POST("/CreateDir", nas_os.CreateDir)
 	}
 

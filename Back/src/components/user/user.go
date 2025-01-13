@@ -6,14 +6,18 @@ import (
 	log2 "github.com/labstack/gommon/log"
 	"log"
 	"net/http"
+	"time"
 )
 
 type User struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Avatar   string `json:"avatar"`
+	Id         int       `json:"id"`
+	Name       string    `json:"name"`
+	Username   string    `json:"username"`
+	Password   string    `json:"password"`
+	Avatar     string    `json:"avatar"`
+	LocalPath  string    `json:"localPath"`
+	CreateTime time.Time `json:"createIme"`
+	UpdateTime time.Time `json:"updateIme"`
 }
 
 func CrateUser(c *gin.Context, conn *sql.DB) {

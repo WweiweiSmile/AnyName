@@ -1,6 +1,7 @@
 package api
 
-type DefaultResponse struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
+type Response struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }

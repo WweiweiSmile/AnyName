@@ -2,7 +2,7 @@ package utils
 
 import (
 	"errors"
-	"fmt"
+	log2 "github.com/labstack/gommon/log"
 	"os/exec"
 	"strings"
 )
@@ -15,21 +15,21 @@ path  当前文件夹路径，fileName  视频文件名 。 返回封面文件�
 func VideoFrameToPng(path string, fileName string) (string, error) {
 	coverName := ModifyFileSuffix(fileName, ".png")
 	// -ss 开始时间  -i 输入 -vframes 帧 -f 文件类型
-	cmd := exec.Command("ffmpeg",
+	cmd := exec.Command("C:\\tools\\ffmpeg\\ffmpeg-7.1-essentials_build\\bin\\ffmpeg.exe",
 		"-ss", "00:00:01",
 		"-i", fileName,
 		"-vframes", "1",
 		"-f", "image2",
-		path+".cover/"+coverName,
+		path+coverName,
 	)
 	// 执行命令的目录
 	cmd.Dir = path
 	// 如果有错误
 	if err := cmd.Run(); err != nil {
-		fmt.Println("输入文件路径：", path+fileName, " -  错误：", err.Error())
-		return path + ".cover/" + fileName, errors.New("创建Coover失败")
+		log2.Error(err)
+		return path + fileName, errors.New("创建Coover失败")
 	}
-	return path + ".cover/" + fileName, nil
+	return path + coverName, nil
 }
 
 /*
