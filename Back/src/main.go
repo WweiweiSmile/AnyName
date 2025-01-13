@@ -54,8 +54,8 @@ func main() {
 		directoryRoutes.GET("/list", func(context *gin.Context) {
 			directory.List(context, conn)
 		})
-		directoryRoutes.POST("/modify", func(context *gin.Context) {
-			directory.Modify(context, conn)
+		directoryRoutes.POST("/update", func(context *gin.Context) {
+			directory.Update(context, conn)
 		})
 		directoryRoutes.DELETE("/delete/:id", func(context *gin.Context) {
 			directory.Delete(context, conn)

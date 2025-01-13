@@ -51,10 +51,21 @@ const useEdit = () => {
   });
 };
 
+const useDelete = () => {
+  return useRequest(async (id: number)   => {
+    const res = (await http.delete<DefaultResponse<Directory>>(`/api/directory/delete/${id}`));
+
+    return res?.data?.data;
+  },{
+    manual:true,
+  });
+};
+
 const directoryApi = {
   useList,
   useCreate,
-  useEdit
+  useEdit,
+  useDelete
 }
 
 export default directoryApi;

@@ -18,6 +18,7 @@ const Home: React.FC = () => {
   const {run:runList,data: directoryList,refresh:refreshList} = directoryApi.useList()
   const {runAsync:runCreate} = directoryApi.useCreate()
   const {runAsync:runEdit} = directoryApi.useEdit()
+  const {runAsync:runDelete} = directoryApi.useDelete()
 
 
 
@@ -54,6 +55,21 @@ const Home: React.FC = () => {
       console.error(e);
     }
   }
+
+  const deleteDir = (id:number) => async  () => {
+    try {
+    await runDelete(id)
+      message.success('目录已被删除')
+      refreshList()
+    }catch (e){
+      console.error(e);
+    }
+  }
+
+  const onEdit = (item:Directory) => () => {
+    setDir(item);
+    openEditDirModal();
+  };
 
   return (
     <Content style={{ width: "90%", margin: "auto" }}>
@@ -98,10 +114,7 @@ const Home: React.FC = () => {
       <Row gutter={[20, 20]}>
         {
           directoryList?.map(item => {
-            return <FileItem key={item.id} directory={item} isDir={true}  onEdit={() => {
-              setDir(item);
-              openEditDirModal()
-            }}/>
+            return <FileItem key={item.id} directory={item} isDir={true}  onDelete={deleteDir(item.id)} onEdit={onEdit(item)}/>
           })
         }
       </Row>

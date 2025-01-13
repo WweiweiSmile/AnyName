@@ -73,7 +73,7 @@ func Delete(c *gin.Context, conn *sql.DB) {
 	t := `delete from nas_database.directory where id=?`
 	if _, err := conn.Query(t, id); err != nil {
 		log2.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "目录删除失败"})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "目录删除失败"})
 		return
 	}
 
