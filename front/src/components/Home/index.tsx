@@ -6,27 +6,33 @@ import {useAuthContext} from '../../hooks';
 import directoryApi, {Directory} from '../../apis/directory';
 import FileItem from '../file_list/fileItem';
 import FileUpload from '../file_list/fileUpload';
+import fileApi from '../../apis/file';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const {logout} = useAuthContext()!;
   const {user} = useAuthContext();
-  const [parentDirs,setParentDirs] = useState<Directory[]>([{
-    id:0,
-    name:'Home'
-  } as any]);
+  const [parentDirs, setParentDirs] = useState<Directory[]>([
+    {
+      id: 0,
+      name: 'Home',
+    } as any]);
   const [dirName, setDirName] = useState<string>('');
   const [createDirVisible, setCreateDirVisible] = useState<boolean>(false);
   const [editDirVisible, setEditDirVisible] = useState<boolean>(false);
   const [dir, setDir] = useState<Directory | null>(null);
   const {run: runList, data: directoryList, refresh: refreshList} = directoryApi.useList();
+  const {run: runListFile, data: fileList} = fileApi.useList();
   const {runAsync: runCreate} = directoryApi.useCreate();
   const {runAsync: runEdit} = directoryApi.useEdit();
   const {runAsync: runDelete} = directoryApi.useDelete();
 
+  console.log('fileList->',fileList);
+
   useEffect(() => {
     runList(parentDirs[parentDirs.length - 1].id, user?.id!);
-  }, [runList]);
+    runListFile(user?.id!, parentDirs[parentDirs.length - 1].id);
+  }, [runList,runListFile]);
 
   const openCreateDirModal = () => {setCreateDirVisible(true);};
   const closeCreateDirModal = () => {setCreateDirVisible(false);};
@@ -73,7 +79,7 @@ const Home: React.FC = () => {
     openEditDirModal();
   };
 
-  const onView = (item:Directory) => () => {
+  const onView = (item: Directory) => () => {
     setParentDirs([...parentDirs, item]);
     runList(item.id, user?.id!);
   };
@@ -106,9 +112,10 @@ const Home: React.FC = () => {
       <Row>
         <Breadcrumb>
           {
-            parentDirs.map((item: Directory, index:number) => (<Breadcrumb.Item key={item.id} onClick={jumpToDirectoryDeep(index)} >
-              {item.name}
-            </Breadcrumb.Item>))
+            parentDirs.map(
+              (item: Directory, index: number) => (<Breadcrumb.Item key={item.id} onClick={jumpToDirectoryDeep(index)}>
+                {item.name}
+              </Breadcrumb.Item>))
           }
         </Breadcrumb>
       </Row>
@@ -116,8 +123,16 @@ const Home: React.FC = () => {
       <Row gutter={[20, 20]}>
         {
           directoryList?.map(item => {
-            return <FileItem key={item.id} directory={item} isDir={true} onView={onView(item)} onDelete={deleteDir(item.id)}
+            return <FileItem key={item.id} directory={item} isDir={true} onView={onView(item)}
+                             onDelete={deleteDir(item.id)}
                              onEdit={onEdit(item)}/>;
+          })
+        }
+        {
+          fileList?.map(item => {
+            return <FileItem key={item.id} file={item} isDir={false}
+                             onDelete={() => {message.info('该功能暂未开发');}}
+                             onEdit={() => {message.info('该功能暂未开发');}}/>;
           })
         }
       </Row>

@@ -10,7 +10,7 @@ type FileUploadProps = {
 
 const FileUpload: React.FC<FileUploadProps> = (props) => {
   const {directoryId} = props;
-  const {runAsync: runFileUpload} = fileApi.useFileUpload();
+  const {runAsync: runFileUpload} = fileApi.useUpload();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const {user} = useAuthContext();
 

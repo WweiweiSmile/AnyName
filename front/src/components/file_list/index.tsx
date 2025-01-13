@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Breadcrumb, Button, Card, Col, Input, message, Popover, Row, Space, Typography, Upload} from 'antd';
 import {EyeOutlined, FileTextFilled, FolderFilled} from '@ant-design/icons';
 import {UploadFile} from 'antd/es/upload';
-import {useCreateDir, useFileUpload, useGetFileInfos} from '../../apis/file';
+import {useCreateDir, useUpload, useGetFileInfos} from '../../apis/file';
 import {useNavigate} from 'react-router-dom';
 
 const {Meta} = Card;
@@ -27,7 +27,7 @@ const FileUpload: React.FC = () => {
   const [dirName, setDirName] = useState('');
   const [dirPath, setDirPath] = useState<string[]>([]);
   const [createDirOpen, setCreateDirOpen] = useState(false);
-  const {runAsync: fileUPloadRun} = useFileUpload();
+  const {runAsync: fileUPloadRun} = useUpload();
   const {
     data: fileInfos,
     run: fileInfosRun,

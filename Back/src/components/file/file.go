@@ -47,7 +47,7 @@ func List(c *gin.Context, conn *sql.DB) {
 	rows, err := conn.Query(t, directoryId, userId)
 	if err != nil {
 		log2.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"Code": 500, "Message": "数据库查询文件信息失败", "Data": nil})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "数据库查询文件信息失败", "data": nil})
 		return
 
 	}
@@ -59,7 +59,7 @@ func List(c *gin.Context, conn *sql.DB) {
 		files = append(files, file)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Code": 200, "Message": "ok", "Data": files})
+	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "ok", "data": files})
 }
 
 /*
