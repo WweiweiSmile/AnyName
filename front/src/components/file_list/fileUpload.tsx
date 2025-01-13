@@ -6,20 +6,23 @@ import {useAuthContext} from '../../hooks';
 
 type FileUploadProps = {
   directoryId: number;
+  afterUpload?: VoidFunction;
 }
 
 const FileUpload: React.FC<FileUploadProps> = (props) => {
-  const {directoryId} = props;
+  const {directoryId, afterUpload} = props;
   const {runAsync: runFileUpload} = fileApi.useUpload();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const {user} = useAuthContext();
 
+  // TODO: 上传多个文件
   const onUpload = async () => {
     try {
       const [file, ...newFiles] = fileList;
-      await runFileUpload({file: file as any, path: user?.localPath!, directoryId,userId:user?.id!});
+      await runFileUpload({file: file as any, path: user?.localPath!, directoryId, userId: user?.id!});
       message.success('文件上传成功');
       setFileList(newFiles);
+      afterUpload?.()
     } catch (err) {
       console.error(err);
     }

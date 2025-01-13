@@ -145,8 +145,7 @@ const Home: React.FC = () => {
         <Col>
           <Button onClick={openCreateDirModal}>新建目录</Button>
         </Col>
-        {/* TODO: 上传文件成功后，刷新文件*/}
-        <FileUpload directoryId={parentDirs[parentDirs.length - 1].id}></FileUpload>
+        <FileUpload directoryId={parentDirs[parentDirs.length - 1].id} afterUpload={refreshListFile}></FileUpload>
       </Row>
 
       <Row>
