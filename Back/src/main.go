@@ -55,6 +55,9 @@ func main() {
 		fileRoutes.GET("/list", func(context *gin.Context) {
 			file.List(context, conn)
 		})
+		fileRoutes.PUT("/update", func(context *gin.Context) {
+			file.Update(context, conn)
+		})
 		fileRoutes.DELETE("/delete/:id", func(context *gin.Context) {
 			file.Delete(context, conn)
 		})

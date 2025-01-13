@@ -81,6 +81,33 @@ func Delete(c *gin.Context, conn *sql.DB) {
 	}
 }
 
+func Update(c *gin.Context, conn *sql.DB) {
+	var file File
+	if err := c.Bind(&file); err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusBadGateway, gin.H{"code": 400, "message": "无法获取文件信息化", "data": nil})
+		return
+	}
+
+	t := `update file set name=? where id=?`
+
+	result, err := conn.Exec(t, file.Name, file.ID)
+	if err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "文件名更改失败", "data": nil})
+		return
+	}
+
+	count, _ := result.RowsAffected()
+	if count == 0 {
+		log2.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "文件名更改失败", "data": nil})
+		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "ok", "data": nil})
+	}
+}
+
 /*
 获取文件后缀，返回文件名后缀 .png、.mp4 等，没有后缀将会返回""
 传入: aaa.mp4，返回: mp4
