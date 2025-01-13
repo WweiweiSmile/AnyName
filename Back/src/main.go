@@ -8,30 +8,16 @@ import (
 	"Back/src/components/user"
 	"Back/src/components/videoplay"
 	"Back/src/db"
-	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	"os"
 )
 
 func main() {
 	s := gin.Default()
-	file, err := os.Open("config.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 
-	decoder := json.NewDecoder(file)
-	config := db.Config{}
-	err = decoder.Decode(&config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", config.Username, config.Password, config.Host, config.Port, config.Name)
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", db.DConfig.Username, db.DConfig.Password, db.DConfig.Host, db.DConfig.Port, db.DConfig.Name)
 	conn := db.Connect(connStr)
 
 	userRoutes := s.Group("/api/user")
@@ -86,7 +72,7 @@ func main() {
 	// openai接口代理
 	s.POST("/api/openai", openai.OpenaiHanddle)
 
-	err = s.Run(":8080")
+	err := s.Run(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}

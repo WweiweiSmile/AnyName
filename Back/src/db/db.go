@@ -2,8 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"encoding/json"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"os"
 )
 
 type Config struct {
@@ -12,6 +14,19 @@ type Config struct {
 	Host     string `json:"host"`
 	Port     string `json:"port"`
 	Name     string `json:"name"`
+}
+
+var DConfig Config
+
+func init() {
+	file, err := os.Open("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&DConfig)
 }
 
 func Connect(addr string) *sql.DB {
