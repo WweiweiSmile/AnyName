@@ -4,6 +4,7 @@ import (
 	"Back/src/components/auth"
 	"Back/src/components/config"
 	"Back/src/components/directory"
+	"Back/src/components/file"
 	"Back/src/components/nas_os"
 	"Back/src/components/openai"
 	"Back/src/components/user"
@@ -46,6 +47,13 @@ func main() {
 		})
 		directoryRoutes.DELETE("/delete/:id", func(context *gin.Context) {
 			directory.Delete(context, conn)
+		})
+	}
+
+	fileRoutes := s.Group("/api/file")
+	{
+		fileRoutes.GET("/list", func(context *gin.Context) {
+			file.List(context, conn)
 		})
 	}
 

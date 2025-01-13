@@ -91,7 +91,7 @@ func Upload(c *gin.Context, conn *sql.DB) {
 		return
 	}
 
-	err = file2.InsertFile(file2.File{
+	err = file2.Insert(file2.File{
 		Name:        file.Filename,
 		Type:        file2.GetFileSuffix(file.Filename),
 		DirectoryId: directoryId,

@@ -3,6 +3,9 @@ package file
 import (
 	"database/sql"
 	"errors"
+	"github.com/gin-gonic/gin"
+	log2 "github.com/labstack/gommon/log"
+	"net/http"
 	"strings"
 )
 
@@ -19,7 +22,7 @@ type File struct {
 	UpdateTime  int64  `json:"updateTime"`
 }
 
-func InsertFile(file File, conn *sql.DB) error {
+func Insert(file File, conn *sql.DB) error {
 	t := `insert into file (name,type,directory_id,user_id,path,size,cover) values (?,?,?,?,?,?,?)`
 
 	result, err := conn.Exec(t, file.Name, file.Type, file.DirectoryId, file.UserId, file.Path, file.Size, file.Cover)
@@ -35,22 +38,29 @@ func InsertFile(file File, conn *sql.DB) error {
 	}
 }
 
-//func ListFile(dirId int, userId int, conn *sql.DB) {
-//	t := `select * from file where directory_id = ? and user_id =?`
-//
-//	result, err := conn.Exec(t, file.Name, file.Type, file.DirectoryId, file.Path, file.Size, file.Cover)
-//
-//	if err != nil {
-//		return err
-//	}
-//	count, _ := result.RowsAffected()
-//	if count == 0 {
-//		return errors.New("insert error")
-//	} else {
-//		return nil
-//	}
-//
-//}
+func List(c *gin.Context, conn *sql.DB) {
+	userId := c.Query("userId")
+	directoryId := c.Query("directoryId")
+	var files []File
+
+	t := `select * from file where directory_id = ? and user_id =?`
+	rows, err := conn.Query(t, directoryId, userId)
+	if err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"Code": 500, "Message": "数据库查询文件信息失败", "Data": nil})
+		return
+
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var file File
+		_ = rows.Scan(&file.ID, &file.Name, &file.Type, &file.DirectoryId, &file.UserId, &file.Path, &file.Size, &file.Cover, &file.CreateTime, &file.UpdateTime)
+		files = append(files, file)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Code": 200, "Message": "ok", "Data": files})
+}
 
 /*
 获取文件后缀，返回文件名后缀 .png、.mp4 等，没有后缀将会返回""
