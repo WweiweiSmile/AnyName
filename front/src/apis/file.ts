@@ -1,4 +1,4 @@
-import {DefaultResponse, http, ListResponse, useAxios} from '.';
+import {DefaultResponse, http, ListResponse} from '.';
 import axios from 'axios';
 import {useRequest} from 'ahooks';
 
@@ -20,7 +20,7 @@ export interface FileType {
  * 文件上传函数
  * @returns
  */
-export const useUpload = () => {
+const useUpload = () => {
   return useRequest(
     async (data: { file: File; path: string, directoryId: number, userId: number }) => {
       const formData = new FormData();
@@ -45,7 +45,7 @@ export const useUpload = () => {
  * 获取文件列表
  * @returns
  */
-export const useList = () => {
+const useList = () => {
   return useRequest(
     async (userId: number, directoryId: number) => {
       try {
@@ -67,9 +67,14 @@ export const useList = () => {
   );
 };
 
-export const get = async () => {
-  const res = await axios.post('/api/hello');
-  return res;
+const useDelete = () => {
+  return useRequest(async (id: number) => {
+    const res = (await http.delete<DefaultResponse<FileType>>(`/api/file/delete/${id}`));
+
+    return res?.data?.data;
+  }, {
+    manual: true,
+  });
 };
 
 type FileInfo = {
@@ -115,6 +120,7 @@ export const useCreateDir = () => {
 const fileApi = {
   useUpload,
   useList,
+  useDelete
 };
 
 export default fileApi;

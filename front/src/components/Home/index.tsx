@@ -1,4 +1,4 @@
-import {Avatar, Breadcrumb, Button, Col, Input, message, Modal, Row} from 'antd';
+import { Breadcrumb, Button, Col, Input, message, Modal, Row} from 'antd';
 import {Content} from 'antd/es/layout/layout';
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
@@ -22,10 +22,11 @@ const Home: React.FC = () => {
   const [editDirVisible, setEditDirVisible] = useState<boolean>(false);
   const [dir, setDir] = useState<Directory | null>(null);
   const {run: runList, data: directoryList, refresh: refreshList} = directoryApi.useList();
-  const {run: runListFile, data: fileList} = fileApi.useList();
   const {runAsync: runCreate} = directoryApi.useCreate();
   const {runAsync: runEdit} = directoryApi.useEdit();
   const {runAsync: runDelete} = directoryApi.useDelete();
+  const {run: runListFile, data: fileList, refresh: refreshListFile} = fileApi.useList();
+  const {runAsync: runDeleteFile} = fileApi.useDelete();
 
   useEffect(() => {
     runList(parentDirs[parentDirs.length - 1].id, user?.id!);
@@ -72,6 +73,16 @@ const Home: React.FC = () => {
     }
   };
 
+  const deleteFile = (id: number) => async () => {
+    try {
+      await runDeleteFile(id);
+      message.success('文件已被删除');
+      refreshListFile();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const onEdit = (item: Directory) => () => {
     setDir(item);
     openEditDirModal();
@@ -107,6 +118,7 @@ const Home: React.FC = () => {
         <Col>
           <Button onClick={openCreateDirModal}>新建目录</Button>
         </Col>
+        {/* TODO: 上传文件成功后，刷新文件*/}
         <FileUpload directoryId={parentDirs[parentDirs.length - 1].id}></FileUpload>
       </Row>
 
@@ -132,7 +144,7 @@ const Home: React.FC = () => {
         {
           fileList?.map(item => {
             return <FileItem key={item.id} file={item} isDir={false}
-                             onDelete={() => {message.info('该功能暂未开发');}}
+                             onDelete={deleteFile(item.id)}
                              onEdit={() => {message.info('该功能暂未开发');}}/>;
           })
         }

@@ -2,7 +2,7 @@ import {DeleteOutlined, EditOutlined, EyeOutlined, FileTextFilled, FolderFilled}
 import {Card, Col, message, Typography} from 'antd';
 import React from 'react';
 import {Directory} from '../../apis/directory';
-import {useNavigate} from 'react-router-dom';
+// import {useNavigate} from 'react-router-dom';
 import Meta from 'antd/es/card/Meta';
 import {FileType} from '../../apis/file';
 
@@ -19,11 +19,10 @@ interface FileItemProps {
 
 const FileItem: React.FC<FileItemProps> = (props) => {
   const {directory, isDir, file, onEdit, onDelete, onView} = props;
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const name = directory?.name || file?.name;
 
   const coverUrl = 'https://avatars.githubusercontent.com/u/3416942';
-  const path = 'https://avatars.githubusercontent.com/u/3416942';
   const size = 100000000;
 
   // const { cover: coverName } = fileInfo;

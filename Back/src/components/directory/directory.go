@@ -70,7 +70,7 @@ func Update(c *gin.Context, conn *sql.DB) {
 
 func Delete(c *gin.Context, conn *sql.DB) {
 	id := c.Param("id")
-	t := `delete from nas_database.directory where id=?`
+	t := `delete from directory where id=?`
 	if _, err := conn.Query(t, id); err != nil {
 		log2.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "目录删除失败"})

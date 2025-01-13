@@ -62,6 +62,25 @@ func List(c *gin.Context, conn *sql.DB) {
 	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "ok", "data": files})
 }
 
+func Delete(c *gin.Context, conn *sql.DB) {
+	id := c.Param("id")
+
+	t := `delete from file where id = ? `
+	result, err := conn.Exec(t, id)
+	if err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "删除文件失败", "data": nil})
+		return
+
+	}
+	count, _ := result.RowsAffected()
+	if count == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "删除文件失败", "data": nil})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "ok", "data": nil})
+	}
+}
+
 /*
 获取文件后缀，返回文件名后缀 .png、.mp4 等，没有后缀将会返回""
 传入: aaa.mp4，返回: mp4
