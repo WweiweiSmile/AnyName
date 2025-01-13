@@ -2,6 +2,7 @@ package main
 
 import (
 	"Back/src/components/auth"
+	"Back/src/components/config"
 	"Back/src/components/directory"
 	"Back/src/components/nas_os"
 	"Back/src/components/openai"
@@ -17,7 +18,7 @@ import (
 func main() {
 	s := gin.Default()
 
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", db.DConfig.Username, db.DConfig.Password, db.DConfig.Host, db.DConfig.Port, db.DConfig.Name)
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", config.Config.DBUsername, config.Config.DBPassword, config.Config.DBHost, config.Config.DBPort, config.Config.DBName)
 	conn := db.Connect(connStr)
 
 	userRoutes := s.Group("/api/user")

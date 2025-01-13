@@ -22,6 +22,7 @@ func InsertFile(file File, conn *sql.DB) error {
 	t := `insert into file (name,type,directory_id,path,size,cover) values (?,?,?,?,?,?)`
 
 	result, err := conn.Exec(t, file.Name, file.Type, file.DirectoryId, file.Path, file.Size, file.Cover)
+
 	if err != nil {
 		return err
 	}

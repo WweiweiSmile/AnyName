@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"Back/src/components/config"
 	"errors"
 	log2 "github.com/labstack/gommon/log"
 	"os/exec"
@@ -15,7 +16,7 @@ path  当前文件夹路径，fileName  视频文件名 。 返回封面文件�
 func VideoFrameToPng(path string, fileName string) (string, error) {
 	coverName := ModifyFileSuffix(fileName, ".png")
 	// -ss 开始时间  -i 输入 -vframes 帧 -f 文件类型
-	cmd := exec.Command("C:\\tools\\ffmpeg\\ffmpeg-7.1-essentials_build\\bin\\ffmpeg.exe",
+	cmd := exec.Command(config.Config.FfmpegPath,
 		"-ss", "00:00:01",
 		"-i", fileName,
 		"-vframes", "1",
