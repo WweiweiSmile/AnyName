@@ -1,4 +1,4 @@
-import {Button, Col, Input, message, Modal, Row} from 'antd';
+import {Breadcrumb, Button, Col, Input, message, Modal, Row} from 'antd';
 import {Content} from 'antd/es/layout/layout';
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
@@ -12,7 +12,7 @@ const Home: React.FC = () => {
   const {user} = useAuthContext();
   const [parentDirs,setParentDirs] = useState<Directory[]>([{
     id:0,
-    name:''
+    name:'Home'
   } as any]);
   const [dirName, setDirName] = useState<string>('');
   const [createDirVisible, setCreateDirVisible] = useState<boolean>(false);
@@ -77,6 +77,12 @@ const Home: React.FC = () => {
     runList(item.id, user?.id!);
   };
 
+  const jumpToDirectoryDeep = (index: number) => () => {
+    const newParentDirs = parentDirs.slice(0, index + 1);
+    setParentDirs(newParentDirs);
+    runList(newParentDirs[newParentDirs.length - 1].id, user?.id!);
+  };
+
   return (
     <Content style={{width: '90%', margin: 'auto'}}>
 
@@ -93,6 +99,16 @@ const Home: React.FC = () => {
         <Col>
           <Button onClick={openCreateDirModal}>新建目录</Button>
         </Col>
+      </Row>
+
+      <Row>
+        <Breadcrumb>
+          {
+            parentDirs.map((item: Directory, index:number) => (<Breadcrumb.Item key={item.id} onClick={jumpToDirectoryDeep(index)} >
+              {item.name}
+            </Breadcrumb.Item>))
+          }
+        </Breadcrumb>
       </Row>
 
       <Row gutter={[20, 20]}>
