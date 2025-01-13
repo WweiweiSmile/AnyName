@@ -10,12 +10,13 @@ const { Text } = Typography;
 interface FileItemProps {
   isDir: boolean;
   directory:Directory,
+  onView?: () => void,
   onEdit?: () => void,
   onDelete?: () => void,
 }
 
 const FileItem: React.FC<FileItemProps> = (props) => {
-  const {directory, isDir,onEdit,onDelete} = props;
+  const {directory, isDir,onEdit,onDelete,onView} = props;
   const navigate = useNavigate()
   const name = directory?.name;
 
@@ -36,28 +37,36 @@ const FileItem: React.FC<FileItemProps> = (props) => {
     ) : (
       <img alt="example" src={coverUrl} />
     );
-    return (
+
+  const getOnClick = () => () => {
+    if (isDir) {
+      onView?.();
+      return;
+    }
+
+    const suffix = name.split('.').pop() || '';
+    // 文件夹
+    if (isDir) {
+      // setDirPath([...dirPath, fileInfo.name]);
+    }
+    // 视频文件
+    else if (['mp4'].includes(suffix.toLowerCase())) {
+      navigate(path);
+    }
+    // 其他文件
+    else {
+      message.error('该文件还不支持预览，请期待后续开发');
+    }
+  };
+
+  return (
       <Col xs={12} xl={6} xxl={4} key={name}>
         <Card
           cover={cover}
           actions={[
             <EyeOutlined
               key={"view"}
-              onClick={() => {
-                const suffix = name.split(".").pop() || "";
-                // 文件夹
-                if (isDir) {
-                  // setDirPath([...dirPath, fileInfo.name]);
-                }
-                // 视频文件
-                else if (["mp4"].includes(suffix.toLowerCase())) {
-                  navigate(path);
-                }
-                // 其他文件
-                else {
-                  message.error("该文件还不支持预览，请期待后续开发");
-                }
-              }}
+              onClick={getOnClick()}
             />,
             isDir ?  <EditOutlined onClick={onEdit}/> : undefined,
             <DeleteOutlined  onClick={onDelete}/>
