@@ -12,11 +12,13 @@ pnpm 版本 8.4.0
 
 ```json
 {
-  "name": "数据库名称",
-  "username": "用户名",
-  "password": "用户密码",
-  "host": "数据库地址",
-  "port": "端口"
+  "dbName": "数据库名称",
+  "dbUsername": "用户名",
+  "dbPassword": "用户密码",
+  "dbHost": "数据库地址",
+  "dbPort": "端口",
+
+  "ffmpegPath": "本地FFmpeg可执行文件地址"
 }
 ```
 
