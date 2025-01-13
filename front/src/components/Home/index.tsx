@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Col, Input, message, Modal, Row} from 'antd';
+import {Breadcrumb, Button, Col, Input, message, Modal, Row} from 'antd';
 import {Content} from 'antd/es/layout/layout';
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
@@ -6,7 +6,7 @@ import {useAuthContext} from '../../hooks';
 import directoryApi, {Directory} from '../../apis/directory';
 import FileItem from '../file_list/fileItem';
 import FileUpload from '../file_list/fileUpload';
-import fileApi from '../../apis/file';
+import fileApi, {FileType} from '../../apis/file';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -20,12 +20,15 @@ const Home: React.FC = () => {
   const [dirName, setDirName] = useState<string>('');
   const [createDirVisible, setCreateDirVisible] = useState<boolean>(false);
   const [editDirVisible, setEditDirVisible] = useState<boolean>(false);
+  const [updateFileVisible, setUpdateFileVisible] = useState<boolean>(false);
   const [dir, setDir] = useState<Directory | null>(null);
+  const [file, setFile] = useState<FileType | null>(null);
   const {run: runList, data: directoryList, refresh: refreshList} = directoryApi.useList();
   const {runAsync: runCreate} = directoryApi.useCreate();
   const {runAsync: runEdit} = directoryApi.useEdit();
   const {runAsync: runDelete} = directoryApi.useDelete();
   const {run: runListFile, data: fileList, refresh: refreshListFile} = fileApi.useList();
+  const {runAsync: runUpdateFile} = fileApi.useUpdate();
   const {runAsync: runDeleteFile} = fileApi.useDelete();
 
   useEffect(() => {
@@ -35,9 +38,14 @@ const Home: React.FC = () => {
 
   const openCreateDirModal = () => {setCreateDirVisible(true);};
   const closeCreateDirModal = () => {setCreateDirVisible(false);};
+
   const openEditDirModal = () => {setEditDirVisible(true);};
   const closeEditDirModal = () => {setEditDirVisible(false);};
   const updateDirName = (v: string) => { setDir({...dir!, name: v}); };
+
+  const openUpdateFileModal = () => {setUpdateFileVisible(true);};
+  const closeUpdateFileModal = () => {setUpdateFileVisible(false);};
+  const updateFileName = (v: string) => {setFile({...file as any, name: v});};
 
   const createDir = async () => {
     try {
@@ -88,6 +96,11 @@ const Home: React.FC = () => {
     openEditDirModal();
   };
 
+  const onUpdateFile = (file: FileType) => () => {
+    setFile(file);
+    openUpdateFileModal();
+  };
+
   const onView = (directory: Directory) => () => {
     setParentDirs([...parentDirs, directory]);
     runList(directory.id, user?.id!);
@@ -100,6 +113,20 @@ const Home: React.FC = () => {
     setParentDirs(newParentDirs);
     runList(currentDir.id, user?.id!);
     runListFile(user?.id!, currentDir.id);
+  };
+
+  const updateFile = async () => {
+    try {
+      await runUpdateFile({
+        id: file?.id!,
+        name: file?.name!,
+      });
+      message.success('文件名更改成功');
+      refreshListFile();
+      closeUpdateFileModal();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -145,7 +172,7 @@ const Home: React.FC = () => {
           fileList?.map(item => {
             return <FileItem key={item.id} file={item} isDir={false}
                              onDelete={deleteFile(item.id)}
-                             onEdit={() => {message.info('该功能暂未开发');}}/>;
+                             onEdit={onUpdateFile(item)}/>;
           })
         }
       </Row>
@@ -156,6 +183,10 @@ const Home: React.FC = () => {
 
       <Modal title="编辑目录" open={editDirVisible} onCancel={closeEditDirModal} onOk={editDir}>
         <Input placeholder="请输入目录名称" value={dir?.name} onChange={(v) => updateDirName(v.target.value)}/>
+      </Modal>
+
+      <Modal title="编辑文件" open={updateFileVisible} onCancel={closeUpdateFileModal} onOk={updateFile}>
+        <Input placeholder="请输入文件名" value={file?.name} onChange={(v) => updateFileName(v.target.value)}/>
       </Modal>
     </Content>
   );

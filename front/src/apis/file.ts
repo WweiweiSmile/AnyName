@@ -77,6 +77,16 @@ const useDelete = () => {
   });
 };
 
+const useUpdate = () => {
+  return useRequest(async (data: { id: number, name: string }) => {
+    const res = (await http.put<DefaultResponse<FileType>>(`/api/file/update`, data));
+
+    return res?.data?.data;
+  }, {
+    manual: true,
+  });
+};
+
 type FileInfo = {
   name: string;
   size: number;
@@ -120,7 +130,8 @@ export const useCreateDir = () => {
 const fileApi = {
   useUpload,
   useList,
-  useDelete
+  useDelete,
+  useUpdate
 };
 
 export default fileApi;
