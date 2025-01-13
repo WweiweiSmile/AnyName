@@ -1,10 +1,11 @@
-import {Breadcrumb, Button, Col, Input, message, Modal, Row} from 'antd';
+import {Avatar, Breadcrumb, Button, Col, Input, message, Modal, Row} from 'antd';
 import {Content} from 'antd/es/layout/layout';
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuthContext} from '../../hooks';
 import directoryApi, {Directory} from '../../apis/directory';
 import FileItem from '../file_list/fileItem';
+import FileUpload from '../file_list/fileUpload';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -98,6 +99,9 @@ const Home: React.FC = () => {
         </Col>
         <Col>
           <Button onClick={openCreateDirModal}>新建目录</Button>
+        </Col>
+        <Col>
+          <FileUpload directoryId={parentDirs[parentDirs.length - 1].id}></FileUpload>
         </Col>
       </Row>
 

@@ -1,4 +1,4 @@
-import {useAxios} from '.';
+import {http, useAxios} from '.';
 import axios from 'axios';
 import {useRequest} from 'ahooks';
 
@@ -6,16 +6,16 @@ import {useRequest} from 'ahooks';
  * 文件上传函数
  * @returns
  */
-export const useFileUplaod = () => {
-  const axios = useAxios();
-
+export const useFileUpload = () => {
   return useRequest(
-    async (data: { file: File; path: string[] }) => {
+    async (data: { file: File; path:string,directoryId:number }) => {
       const formData = new FormData();
       formData.append("file", data.file);
-      formData.append("path", data.path.join("_"));
+      formData.append("path", data.path);
+      formData.append("directoryId", String(data.directoryId) )
       try {
-        return await axios.post("/api/savefile", formData);
+        const res = await http.post("/api/os/upload", formData);
+        return res?.data?.data
       } catch (err) {
         console.log(err);
       }
@@ -70,3 +70,10 @@ export const useCreateDir = () => {
     }
   );
 };
+
+
+const fileApi = {
+  useFileUpload
+}
+
+export default fileApi;

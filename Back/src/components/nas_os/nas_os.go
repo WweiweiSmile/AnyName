@@ -40,7 +40,7 @@ func Upload(c *gin.Context, conn *sql.DB) {
 
 	if err != nil {
 		res.Code = 400
-		res.Message = "文件所属目录错误"
+		res.Message = "文件所属目录错误,缺少directoryId字段"
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}

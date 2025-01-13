@@ -10,6 +10,7 @@ export type User = {
   username: string;
   password: string;
   avatar: string;
+  localPath:string
 };
 
 const Login: React.FC = () => {
