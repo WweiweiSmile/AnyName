@@ -61,6 +61,9 @@ func main() {
 		fileRoutes.DELETE("/delete/:id", func(context *gin.Context) {
 			file.Delete(context, conn)
 		})
+		fileRoutes.GET("/play/:link", func(context *gin.Context) {
+			file.Play(context, conn)
+		})
 	}
 
 	osRoutes := s.Group("/api/os")

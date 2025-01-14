@@ -9,6 +9,7 @@ export interface FileType {
   type: string;
   directoryId: number;
   userId: number;
+  link: string;
   path: string;
   size: number;
   cover: string;
@@ -131,7 +132,7 @@ const fileApi = {
   useUpload,
   useList,
   useDelete,
-  useUpdate
+  useUpdate,
 };
 
 export default fileApi;

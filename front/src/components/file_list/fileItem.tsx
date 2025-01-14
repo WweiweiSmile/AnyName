@@ -44,7 +44,7 @@ const FileItem: React.FC<FileItemProps> = (props) => {
       onView?.();
       return;
     } else if (['mp4'].includes((file?.type!).toLowerCase())) {
-      message.info('暂时还没开发视频播放功能');
+      onView?.();
       // navigate("");
     } else {
       message.error('该文件还不支持预览，请期待后续开发');

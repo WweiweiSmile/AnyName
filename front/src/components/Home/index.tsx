@@ -170,6 +170,7 @@ const Home: React.FC = () => {
         {
           fileList?.map(item => {
             return <FileItem key={item.id} file={item} isDir={false}
+                             onView={() => navigate(`/videoPlay/${item.link}`)}
                              onDelete={deleteFile(item.id)}
                              onEdit={onUpdateFile(item)}/>;
           })

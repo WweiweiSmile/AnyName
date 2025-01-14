@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	log2 "github.com/labstack/gommon/log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -110,6 +111,23 @@ func Update(c *gin.Context, conn *sql.DB) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "ok", "data": nil})
 	}
+}
+
+func Play(c *gin.Context, conn *sql.DB) {
+	link := c.Param("link")
+	var path string
+
+	str := `select path from file where link=?`
+	row := conn.QueryRow(str, link)
+	_ = row.Scan(&path)
+
+	file, err := os.ReadFile(path)
+	if err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "文件打开失败", "data": nil})
+		return
+	}
+	c.Data(http.StatusOK, "video/mp4", file)
 }
 
 /*
