@@ -19,8 +19,8 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
   const {link} = useParams();
   const timouter = useRef<NodeJS.Timeout[]>([]);
   const [pause, setPause] = useState(true);
-  //FIXME： 视频封面请求地址的端口是写死的
-  const src = `${process.env.REACT_APP_SERVER}/api/file/play/${link}`;
+  
+  const src = `${process.env.REACT_APP_SERVER}/api/file/play/${link}?type=video`;
 
   return (
     <>

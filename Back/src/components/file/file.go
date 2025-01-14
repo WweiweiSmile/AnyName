@@ -115,10 +115,21 @@ func Update(c *gin.Context, conn *sql.DB) {
 
 func Play(c *gin.Context, conn *sql.DB) {
 	link := c.Param("link")
+	t := c.Query("type")
 	var path string
+	var row *sql.Row
+	var contentType string
 
-	str := `select path from file where link=?`
-	row := conn.QueryRow(str, link)
+	videoStr := `select path from file where link=?`
+	coverStr := `select cover from file where link=?`
+	if t == "video" {
+		row = conn.QueryRow(videoStr, link)
+		contentType = "video/mp4"
+	} else {
+		row = conn.QueryRow(coverStr, link)
+		contentType = "image/png"
+	}
+
 	_ = row.Scan(&path)
 
 	file, err := os.ReadFile(path)
@@ -127,7 +138,7 @@ func Play(c *gin.Context, conn *sql.DB) {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "文件打开失败", "data": nil})
 		return
 	}
-	c.Data(http.StatusOK, "video/mp4", file)
+	c.Data(http.StatusOK, contentType, file)
 }
 
 /*
