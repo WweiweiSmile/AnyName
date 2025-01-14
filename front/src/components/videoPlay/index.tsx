@@ -3,7 +3,7 @@ import Video from 'react-video-renderer';
 import {Button, Row, Space} from 'antd';
 import VideoProgress from './children/Progress';
 import './index.scss';
-import {useLocation} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {downloadFile} from '../../utils/utils';
 import {PauseCircleOutlined} from '@ant-design/icons';
 
@@ -12,37 +12,36 @@ type VideoPlayPropsType = {
   onClose: VoidFunction;
   src: string;
 };
+
 const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
-  const { open } = props;
+  const {open} = props;
   const [toolbarVisible, setToolbarVisible] = useState(false);
-  const location = useLocation();
+  const {link} = useParams();
   const timouter = useRef<NodeJS.Timeout[]>([]);
-  const [pause,setPause] = useState(true);
+  const [pause, setPause] = useState(true);
   //FIXME： 视频封面请求地址的端口是写死的
-  const locationStr =
-    window.location.href.split(":")?.slice(0, 2)?.join(":") + ":8080";
-  const src = `${locationStr}${location.pathname}${location.search}`;
+  const src = `${process.env.REACT_APP_SERVER}/api/file/play/${link}`;
 
   return (
     <>
       {
         pause && <div className="fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2  ">
-          <PauseCircleOutlined   style={{fontSize:'10rem',color:'#b6b6b6'}}/>
-         </div>
+          <PauseCircleOutlined style={{fontSize: '10rem', color: '#b6b6b6'}}/>
+        </div>
       }
       {open && (
-        <Video src={src || ""} autoPlay={false}>
+        <Video src={src || ''} autoPlay={false}>
           {(video, state, actions) => (
             <div
               className={`videoPlay`}
-              id={"videoPlayer"}
+              id={'videoPlayer'}
               onMouseDown={() => actions.setPlaybackSpeed(2)}
               onMouseUp={() => actions.setPlaybackSpeed(1)}
               onTouchStart={() => actions.setPlaybackSpeed(2)}
               onTouchEnd={() => actions.setPlaybackSpeed(1)}
               onClick={() => {
                 timouter?.current?.push(
-                  setTimeout(() => setToolbarVisible(!toolbarVisible), 300)
+                  setTimeout(() => setToolbarVisible(!toolbarVisible), 300),
                 );
               }}
               onDoubleClick={() => {
@@ -50,8 +49,8 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
                   timouter?.current?.map((item) => clearTimeout(item));
                   timouter.current = [];
                 }
-                state.status === "paused" ? actions.play() : actions.pause();
-                state.status === "paused" ? setPause(false) : setPause(true);
+                state.status === 'paused' ? actions.play() : actions.pause();
+                state.status === 'paused' ? setPause(false) : setPause(true);
 
               }}
             >
@@ -60,7 +59,7 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
                 className="bottomToolbarContainer"
                 onMouseEnter={() => setToolbarVisible(true)}
                 onMouseLeave={() => setToolbarVisible(false)}
-                style={{ opacity: Number(toolbarVisible) }}
+                style={{opacity: Number(toolbarVisible)}}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -72,7 +71,7 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
                       actions={actions}
                       state={state}
                     ></VideoProgress>
-                    <Row justify={"center"}>
+                    <Row justify={'center'}>
                       <Space>
                         <Button onClick={actions.play}>Play</Button>
                         <Button onClick={actions.pause}>Pause</Button>
@@ -94,13 +93,13 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
                         </Button>
                         <Button
                           onClick={() => {
-                            const el = document.getElementById("videoPlayer");
+                            const el = document.getElementById('videoPlayer');
                             el?.requestFullscreen();
                           }}
                         >
                           全屏
                         </Button>
-                        <Button onClick={() =>  downloadFile(src, decodeURIComponent(src.split('=')[2]))}>下载</Button>
+                        <Button onClick={() => downloadFile(src, decodeURIComponent(src.split('=')[2]))}>下载</Button>
                       </Space>
                     </Row>
                   </div>
