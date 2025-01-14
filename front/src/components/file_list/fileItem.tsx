@@ -2,7 +2,6 @@ import {DeleteOutlined, EditOutlined, EyeOutlined, FileTextFilled, FolderFilled}
 import {Card, Col, message, Typography} from 'antd';
 import React from 'react';
 import {Directory} from '../../apis/directory';
-// import {useNavigate} from 'react-router-dom';
 import Meta from 'antd/es/card/Meta';
 import {FileType} from '../../apis/file';
 
@@ -19,24 +18,16 @@ interface FileItemProps {
 
 const FileItem: React.FC<FileItemProps> = (props) => {
   const {directory, isDir, file, onEdit, onDelete, onView} = props;
-  // const navigate = useNavigate();
   const name = directory?.name || file?.name;
 
-  const coverUrl = 'https://avatars.githubusercontent.com/u/3416942';
-  const size = 100000000;
-
-  // const { cover: coverName } = fileInfo;
-  // const coverUrl = `${locationStr}/videoPlay?path=${JSON.stringify([
-  //   ...dirPath,
-  //   ".cover",
-  // ])}&fileName=${coverName}`;
+  const coverUrl = `${process.env.REACT_APP_SERVER}/api/file/play/${file?.link}?type=cover`;
 
   const cover = isDir ? (
     <FolderFilled style={{fontSize: '10rem', color: '#ffd45e'}}/>
   ) : file?.type === 'txt' ? (
     <FileTextFilled style={{fontSize: '10rem', color: '#d8dade'}}/>
   ) : (
-    <img alt="example" src={coverUrl}/>
+    <img alt="example" className="w-40 h-40 overflow-hidden contain-content" src={coverUrl}/>
   );
 
   const getOnClick = () => () => {
@@ -45,7 +36,6 @@ const FileItem: React.FC<FileItemProps> = (props) => {
       return;
     } else if (['mp4'].includes((file?.type!).toLowerCase())) {
       onView?.();
-      // navigate("");
     } else {
       message.error('该文件还不支持预览，请期待后续开发');
     }
@@ -66,11 +56,14 @@ const FileItem: React.FC<FileItemProps> = (props) => {
       >
         <Meta
           title={
-            <Text ellipsis={{tooltip: name}}>
+          <div className="text-center">
+            <Text  ellipsis={{tooltip: name}}>
               {name}
             </Text>
+          </div>
+
           }
-          description={size}
+          // description={file?.size || 19000}
         />
       </Card>
     </Col>
