@@ -2,13 +2,13 @@ package utils
 
 import (
 	"Back/src/components/config"
+	"crypto/sha256"
+	"encoding/base64"
 	"errors"
 	log2 "github.com/labstack/gommon/log"
 	"os/exec"
 	"strings"
 )
-
-var basicPath string = "D:\\"
 
 /*
 path  当前文件夹路径，fileName  视频文件名 。 返回封面文件的绝对路径
@@ -31,6 +31,18 @@ func VideoFrameToPng(path string, fileName string) (string, error) {
 		return path + fileName, errors.New("创建Coover失败")
 	}
 	return path + coverName, nil
+}
+
+// Hash16
+// /** 使用 SHA-256算法，对字符串的进行哈希，对哈希结果进行base64编码后截取16位
+func Hash16(str string) string {
+	h := sha256.Sum256([]byte(str))
+	result := base64.StdEncoding.EncodeToString(h[:])
+	if 16-len(result) > 0 {
+		return result[:16] + strings.Repeat("=", 16-len(result))
+	} else {
+		return result[:16]
+	}
 }
 
 /*

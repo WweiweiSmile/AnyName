@@ -1,6 +1,7 @@
 package file
 
 import (
+	"Back/src/components/utils"
 	"database/sql"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ type File struct {
 	Type        string `json:"type"`
 	DirectoryId int64  `json:"directoryId"`
 	UserId      int64  `json:"userId"`
+	Link        string `json:"link"`
 	Path        string `json:"path"`
 	Size        int64  `json:"size"`
 	Cover       string `json:"cover"`
@@ -23,9 +25,11 @@ type File struct {
 }
 
 func Insert(file File, conn *sql.DB) error {
-	t := `insert into file (name,type,directory_id,user_id,path,size,cover) values (?,?,?,?,?,?,?)`
+	link := utils.Hash16(file.Path)
 
-	result, err := conn.Exec(t, file.Name, file.Type, file.DirectoryId, file.UserId, file.Path, file.Size, file.Cover)
+	t := `insert into file (name,type,directory_id,user_id,link,path,size,cover) values (?,?,?,?,?,?,?,?)`
+
+	result, err := conn.Exec(t, file.Name, file.Type, file.DirectoryId, file.UserId, link, file.Path, file.Size, file.Cover)
 
 	if err != nil {
 		return err
@@ -55,7 +59,7 @@ func List(c *gin.Context, conn *sql.DB) {
 
 	for rows.Next() {
 		var file File
-		_ = rows.Scan(&file.ID, &file.Name, &file.Type, &file.DirectoryId, &file.UserId, &file.Path, &file.Size, &file.Cover, &file.CreateTime, &file.UpdateTime)
+		_ = rows.Scan(&file.ID, &file.Name, &file.Type, &file.DirectoryId, &file.UserId, &file.Link, &file.Path, &file.Size, &file.Cover, &file.CreateTime, &file.UpdateTime)
 		files = append(files, file)
 	}
 
