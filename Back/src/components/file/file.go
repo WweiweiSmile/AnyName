@@ -113,6 +113,7 @@ func Update(c *gin.Context, conn *sql.DB) {
 	}
 }
 
+// TODO: 文件能够分段读取
 func Play(c *gin.Context, conn *sql.DB) {
 	link := c.Param("link")
 	t := c.Query("type")
