@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 读取仓库内容
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
     - name: 设置go版本
       uses: actions/setup-go@v4
       with:
@@ -23,7 +23,7 @@ jobs:
     - name: 更新go依赖
       run: go get.
     - name: 编译go程序
-      run:  cd Back & go build -o nas_go -v ./...
+      run:  cd Back && go build -o nas_go -v ./...
     - name: 部署
       uses: appleboy/ssh-action@v0.1.3
       with:
