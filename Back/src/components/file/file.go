@@ -261,7 +261,7 @@ func Download(c *gin.Context, conn *sql.DB) {
 
 	if err := nas_os.Download(data.Url, path, data.FileName); err != nil {
 		log2.Error(err)
-		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("下载失败"))
+		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse(err.Error()))
 		return
 	}
 	c.JSON(http.StatusOK, api.CreateSuccessResponse(nil))
