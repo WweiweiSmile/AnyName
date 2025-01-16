@@ -237,11 +237,12 @@ func Play(c *gin.Context, conn *sql.DB) {
 	c.Data(http.StatusOK, contentType, file)
 }
 
+// TODO: 文件下载后，添加文件信息到file表中
 func Download(c *gin.Context, conn *sql.DB) {
 	var data struct {
-		url      string
-		fileName string
-		userId   int64
+		Url      string `json:"url"`
+		FileName string `json:"fileName"`
+		UserId   int64  `json:"userId"`
 	}
 	if err := c.Bind(&data); err != nil {
 		log2.Error(err)
@@ -251,18 +252,19 @@ func Download(c *gin.Context, conn *sql.DB) {
 
 	var path string
 	t := `select local_path from user where  id = ?`
-	row := conn.QueryRow(t, data.userId)
+	row := conn.QueryRow(t, data.UserId)
 	if err := row.Scan(&path); err != nil {
 		log2.Error(err)
 		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("无法获取用户存储地址"))
 		return
 	}
 
-	if err := nas_os.Download(data.url, path, data.fileName); err != nil {
+	if err := nas_os.Download(data.Url, path, data.FileName); err != nil {
 		log2.Error(err)
 		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("下载失败"))
 		return
 	}
+	c.JSON(http.StatusOK, api.CreateSuccessResponse(nil))
 }
 
 /*
