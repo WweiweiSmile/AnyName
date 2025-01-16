@@ -2,7 +2,6 @@ package main
 
 import (
 	"Back/src/components/auth"
-	"Back/src/components/config"
 	"Back/src/components/directory"
 	"Back/src/components/file"
 	"Back/src/components/nas_os"
@@ -10,7 +9,6 @@ import (
 	"Back/src/components/user"
 	"Back/src/components/videoplay"
 	"Back/src/db"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
@@ -19,17 +17,10 @@ import (
 func main() {
 	s := gin.Default()
 
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", config.Config.DBUsername, config.Config.DBPassword, config.Config.DBHost, config.Config.DBPort, config.Config.DBName)
-	conn := db.Connect(connStr)
-
 	userRoutes := s.Group("/api/user")
 	{
-		userRoutes.POST("/login", func(context *gin.Context) {
-			user.Login(context, conn)
-		})
-		userRoutes.POST("/create", func(context *gin.Context) {
-			user.CrateUser(context, conn)
-		})
+		userRoutes.POST("/login", user.Login)
+		userRoutes.POST("/create", user.CrateUser)
 		userRoutes.PUT("/modifyName", user.ModifyName)
 		userRoutes.PUT("/modifyPassword", user.ModifyPassword)
 	}
@@ -37,41 +28,43 @@ func main() {
 	directoryRoutes := s.Group("/api/directory")
 	{
 		directoryRoutes.POST("/create", func(context *gin.Context) {
-			directory.Create(context, conn)
+			directory.Create(context, db.Conn)
 		})
 		directoryRoutes.GET("/list", func(context *gin.Context) {
-			directory.List(context, conn)
+			directory.List(context, db.Conn)
 		})
 		directoryRoutes.POST("/update", func(context *gin.Context) {
-			directory.Update(context, conn)
+			directory.Update(context, db.Conn)
 		})
 		directoryRoutes.DELETE("/delete/:id", func(context *gin.Context) {
-			directory.Delete(context, conn)
+			directory.Delete(context, db.Conn)
 		})
 	}
 
 	fileRoutes := s.Group("/api/file")
 	{
 		fileRoutes.GET("/list", func(context *gin.Context) {
-			file.List(context, conn)
+			file.List(context, db.Conn)
 		})
 		fileRoutes.PUT("/update", func(context *gin.Context) {
-			file.Update(context, conn)
+			file.Update(context, db.Conn)
 		})
 		fileRoutes.DELETE("/delete/:id", func(context *gin.Context) {
-			file.Delete(context, conn)
+			file.Delete(context, db.Conn)
 		})
 		fileRoutes.GET("/play/:link", func(context *gin.Context) {
-			file.Play(context, conn)
+			file.Play(context, db.Conn)
+		})
+		fileRoutes.POST("/download", func(context *gin.Context) {
+			file.Download(context, db.Conn)
 		})
 	}
 
 	osRoutes := s.Group("/api/os")
 	{
 		osRoutes.GET("/filesInfo", nas_os.FilesInfo)
-		osRoutes.GET("/download", nas_os.Download)
 		osRoutes.POST("/upload", func(context *gin.Context) {
-			nas_os.Upload(context, conn)
+			file.Upload(context, db.Conn)
 		})
 		osRoutes.POST("/CreateDir", nas_os.CreateDir)
 	}

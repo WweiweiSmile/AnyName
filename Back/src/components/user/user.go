@@ -1,7 +1,7 @@
 package user
 
 import (
-	"database/sql"
+	"Back/src/db"
 	"github.com/gin-gonic/gin"
 	log2 "github.com/labstack/gommon/log"
 	"log"
@@ -20,7 +20,7 @@ type User struct {
 	UpdateTime time.Time `json:"updateIme"`
 }
 
-func CrateUser(c *gin.Context, conn *sql.DB) {
+func CrateUser(c *gin.Context) {
 	var user User
 	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "未能正确解析用户信息"})
@@ -28,7 +28,7 @@ func CrateUser(c *gin.Context, conn *sql.DB) {
 	}
 
 	t := `insert into user (name,username,password,avatar) values (?,?,?,?)`
-	if _, err := conn.Query(t, user.Name, user.Username, user.Password, user.Avatar); err != nil {
+	if _, err := db.Conn.Query(t, user.Name, user.Username, user.Password, user.Avatar); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "用户注册失败"})
 		log.Fatal(err)
 		return
@@ -36,7 +36,7 @@ func CrateUser(c *gin.Context, conn *sql.DB) {
 	c.JSON(http.StatusOK, gin.H{"message": "用户注册成功"})
 }
 
-func Login(c *gin.Context, conn *sql.DB) {
+func Login(c *gin.Context) {
 	var user User
 	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "未能正确解析用户信息"})
@@ -45,7 +45,7 @@ func Login(c *gin.Context, conn *sql.DB) {
 
 	t := `select id,username,name,avatar,local_path from user where username=? and password=?`
 
-	rows, err := conn.Query(t, user.Username, user.Password)
+	rows, err := db.Conn.Query(t, user.Username, user.Password)
 	if err != nil {
 		log2.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "用户或者密码错误"})

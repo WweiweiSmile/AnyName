@@ -110,6 +110,8 @@ github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyC
 github.com/valyala/fasttemplate v1.2.1/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=
 github.com/valyala/fasttemplate v1.2.2 h1:lxLXG0uE3Qnshl9QyaK6XJxMXlQZELvChBOCmQD0Loo=
 github.com/valyala/fasttemplate v1.2.2/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=
+github.com/ynsgnr/aria2go v0.0.0-20190317155935-c48e59783821 h1:u7Ccf6Q8RHS5NRtaedudURcUt33+jieRhvi0HgHzqu0=
+github.com/ynsgnr/aria2go v0.0.0-20190317155935-c48e59783821/go.mod h1:GIZQz0e6PpgUM6AxkEFlTum/IIXQAO2YsGcj5Aer58c=
 gocv.io/x/gocv v0.25.0/go.mod h1:Rar2PS6DV+T4FL+PM535EImD/h13hGVaHhnCu1xarBs=
 golang.org/x/arch v0.13.0 h1:KCkqVVV1kGg0X87TFysjCJ8MxtZEIU4Ja/yXGeoECdA=
 golang.org/x/arch v0.13.0/go.mod h1:FEVrYAQjsQXMVJ1nsMoVVXPZg6p2JE2mx8psSWTDQys=

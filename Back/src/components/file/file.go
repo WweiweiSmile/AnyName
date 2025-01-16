@@ -1,13 +1,17 @@
 package file
 
 import (
+	"Back/src/components/api"
+	"Back/src/components/nas_os"
 	"Back/src/components/utils"
 	"database/sql"
 	"errors"
 	"github.com/gin-gonic/gin"
 	log2 "github.com/labstack/gommon/log"
+	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -113,6 +117,97 @@ func Update(c *gin.Context, conn *sql.DB) {
 	}
 }
 
+func Upload(c *gin.Context, conn *sql.DB) {
+	res := api.Response{
+		Code:    200,
+		Message: "文件上传成功",
+		Data:    nil,
+	}
+
+	file, err := c.FormFile("file")
+	if file == nil || err != nil {
+		res.Code = 400
+		res.Message = "上传了空文件"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	directoryIdStr := c.PostForm("directoryId")
+	directoryId, err := strconv.ParseInt(directoryIdStr, 10, 64)
+	userIdStr := c.PostForm("userId")
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+
+	if err != nil {
+		res.Code = 400
+		res.Message = "缺少directoryId或者userId字段"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	path := c.PostForm("path")
+	if path == "" {
+		res.Code = 400
+		res.Message = "用户暂未设置上传路径"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	filePrePath := path + "\\"
+	filePath := path + "\\" + file.Filename
+
+	src, err := file.Open()
+	if err != nil {
+		res.Code = 400
+		res.Message = "无法读取上传文件"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	defer src.Close()
+
+	dst, err := os.Create(filePath)
+
+	if err != nil {
+		res.Code = 500
+		res.Message = "服务器创建文件失败"
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+	defer dst.Close()
+
+	if _, err = io.Copy(dst, src); err != nil {
+		res.Code = 500
+		res.Message = "复制文件到指定目录失败"
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+
+	coverPath, err := utils.VideoFrameToPng(filePrePath, file.Filename)
+	if err != nil {
+		res.Code = 500
+		res.Message = "创建封面失败"
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+
+	err = Insert(File{
+		Name:        file.Filename,
+		Type:        GetFileSuffix(file.Filename),
+		DirectoryId: directoryId,
+		UserId:      userId,
+		Path:        filePath,
+		Size:        file.Size,
+		Cover:       coverPath,
+	}, conn)
+
+	if err != nil {
+		res.Code = 500
+		res.Message = "文件信息插入数据库失败"
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
 // TODO: 文件能够分段读取
 func Play(c *gin.Context, conn *sql.DB) {
 	link := c.Param("link")
@@ -140,6 +235,34 @@ func Play(c *gin.Context, conn *sql.DB) {
 		return
 	}
 	c.Data(http.StatusOK, contentType, file)
+}
+
+func Download(c *gin.Context, conn *sql.DB) {
+	var data struct {
+		url      string
+		fileName string
+		userId   int64
+	}
+	if err := c.Bind(&data); err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusBadRequest, api.CreatClientFailResponse("无法获取数据"))
+		return
+	}
+
+	var path string
+	t := `select local_path from user where  id = ?`
+	row := conn.QueryRow(t, data.userId)
+	if err := row.Scan(&path); err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("无法获取用户存储地址"))
+		return
+	}
+
+	if err := nas_os.Download(data.url, path, data.fileName); err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("下载失败"))
+		return
+	}
 }
 
 /*
