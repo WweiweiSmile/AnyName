@@ -21,7 +21,7 @@ jobs:
       with:
         go-version: '1.23'
     - name: 更新go依赖
-      run: go get
+      run:  cd Back && go mod download
     - name: 编译go程序
       run:  cd Back && go build -o nas_go -v ./...
     - name: 部署
