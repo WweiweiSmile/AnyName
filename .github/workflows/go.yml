@@ -25,7 +25,7 @@ jobs:
     - name: 编译go程序
       run:  cd Back && go build -o nas_go
     - name: 部署
-      uses: appleboy/ssh-action@v1.3.0
+      uses: appleboy/ssh-action@v1.2.0
       with:
         debug: true
         host: ${{ secrets.SERVER_HOST }}
