@@ -28,12 +28,12 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         debug: true
-        timeout: 120
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
         port: ${{ secrets.SERVER_PORT }}
         script:
+          pwd &&
           scp  -P ${{ secrets.SERVER_PORT }} ./nas_go ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/usr/nas_exe   &&
           nohup /usr/nas_exe/nas_go > /dev/null 2>&1 &
       
