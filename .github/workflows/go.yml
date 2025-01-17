@@ -23,7 +23,7 @@ jobs:
     - name: 更新go依赖
       run:  cd Back && pwd && go mod download
     - name: 编译go程序
-      run:  cd Back && pwd && go build ./src/main.go -o nas_go
+      run:  cd Back && pwd && go build -o nas_go ./src/main.go
     - name: 上传执行文件
       uses: appleboy/scp-action@v0.1.7
       with:
