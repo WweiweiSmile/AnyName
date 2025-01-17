@@ -22,6 +22,12 @@ jobs:
         go-version: '1.23'
     - name: 更新go依赖
       run:  cd Back && pwd && go mod download
+    - name: 创建配置文件
+      uses: jsdaniell/create-json@v1.2.3
+      with:
+        name: "config.json"
+        json: ${{ secrets.GO_CONFIG_JSON }}
+        dir: "/home/runner/work/AnyName/AnyName/Back"
     - name: 编译go程序
       run:  cd Back && pwd && go build -o nas_go ./src/main.go
     - name: 上传执行文件
