@@ -21,7 +21,7 @@ jobs:
       with:
         go-version: '1.23'
     - name: 更新go依赖
-      run:  cd Back && go mod download
+      run:  pwd && cd Back && go mod download
     - name: 编译go程序
       run:  cd Back && go build -o nas_go
     - name: 部署
@@ -32,8 +32,6 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         port: ${{ secrets.SERVER_PORT }}
         script:
-          pwd &&
-          cd Back &&
           scp -P ${{ secrets.SERVER_PORT }} ./nas_go ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/usr/nas_exe/ &&
           nohup /usr/nas_exe/nas_go > /dev/null 2>&1 &
       
