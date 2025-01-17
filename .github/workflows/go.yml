@@ -31,9 +31,8 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
         port: ${{ secrets.SERVER_PORT }}
-        script: 
-          cd Back &
-          pkill -f nas_go
+        script:
+          cd Back &&
           scp -P ${{ secrets.SERVER_PORT }} ./nas_go ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/usr/nas_exe/
           nohup /usr/nas_exe/nas_go > /dev/null 2>&1 &
       
