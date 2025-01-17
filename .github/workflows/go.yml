@@ -33,7 +33,7 @@ jobs:
         dir: "/Back/"
     
     - name: 查询config.json 是否创建成功
-      run: ls /Back
+      run: cd Back && ls
     
     - name: 编译go程序
       run:  cd Back && pwd && go build -o nas_go ./src/main.go
