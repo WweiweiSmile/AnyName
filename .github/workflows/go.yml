@@ -25,7 +25,7 @@ jobs:
     - name: 编译go程序
       run:  cd Back && go build -o nas_go
     - name: 部署
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.8.0
       with:
         debug: true
         host: ${{ secrets.SERVER_HOST }}
@@ -34,6 +34,7 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         script:
           pwd &&
+          ping ${{ secrets.SERVER_HOST }} &&
           scp  -P ${{ secrets.SERVER_PORT }} ./nas_go ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/usr/nas_exe   &&
           nohup /usr/nas_exe/nas_go > /dev/null 2>&1 &
       
