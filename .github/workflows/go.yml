@@ -32,7 +32,7 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         port: ${{ secrets.SERVER_PORT }}
         script:
-          /home/runner/work/AnyName/AnyName/Back &&
+          pwd &&
           scp -P ${{ secrets.SERVER_PORT }} ./nas_go ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/usr/nas_exe/
           nohup /usr/nas_exe/nas_go > /dev/null 2>&1 &
       
