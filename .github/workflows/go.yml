@@ -23,7 +23,7 @@ jobs:
     - name: 更新go依赖
       run:  cd Back && go mod download
     - name: 编译go程序
-      run:  cd Back && go build -o nas_go -v ./...
+      run:  cd Back && go build -o nas_go
     - name: 部署
       uses: appleboy/ssh-action@v0.1.3
       with:
