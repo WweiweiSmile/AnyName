@@ -27,7 +27,7 @@ jobs:
       with:
         name: "config.json"
         json: ${{ secrets.GO_CONFIG_JSON }}
-        dir: "/home/runner/work/AnyName/AnyName/Back"
+        dir: "/home/runner/work/AnyName/AnyName/Back/"
     - name: 编译go程序
       run:  cd Back && pwd && go build -o nas_go ./src/main.go
     - name: 上传执行文件
