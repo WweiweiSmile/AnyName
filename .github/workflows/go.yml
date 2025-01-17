@@ -25,7 +25,7 @@ jobs:
     - name: 编译go程序
       run:  cd Back && go build -o nas_go
     - name: 服务器连接测试
-      run: ping 1.92.84.209
+      run: ping -c 1 1.92.84.209
     - name: 部署
       uses: appleboy/ssh-action@v1.2.0
       with:
