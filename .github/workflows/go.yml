@@ -24,19 +24,17 @@ jobs:
       run:  pwd && cd Back && go mod download
     - name: 编译go程序
       run:  cd Back && go build -o nas_go
-    - name: 服务器连接测试
-      run: ping -c 1 1.92.84.209
     - name: 部署
-      uses: appleboy/ssh-action@v1.2.0
+      uses: appleboy/ssh-action@v1.3.0
       with:
         debug: true
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
-        password: ${{ secrets.SERVER_PASSWORD }}
+        key: ${{ secrets.SERVER_KEY }}
         port: ${{ secrets.SERVER_PORT }}
         script:
-          pwd &&
-          ping ${{ secrets.SERVER_HOST }}
+          scp  -P ${{ secrets.SERVER_PORT }} ./nas_go ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/usr/nas_exe   &&
+          nohup /usr/nas_exe/nas_go > /dev/null 2>&1 &
 
       
 
