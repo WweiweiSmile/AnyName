@@ -33,7 +33,12 @@ jobs:
         dir: "/Back/"
     
     - name: 查询config.json 是否创建成功
-      run: cd Back && ls
+      run: cd Back &&   if [ -f config.json ]; then
+        echo "config.json exists"
+        else
+        echo "config.json does not exist"
+        exit 1
+        fi && chmod +r config.json
     
     - name: 编译go程序
       run:  cd Back && pwd && go build -o nas_go ./src/main.go
