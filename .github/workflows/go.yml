@@ -30,14 +30,12 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
-        port: ${{ secrets.SERVER_PORT }}
         source: "./Back/nas_go"
         target: "/usr/nas_exe/nas_go"
     - name: 部署
       uses: appleboy/ssh-action@v1.2.0
       with:
         debug: true
-        host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
         port: ${{ secrets.SERVER_PORT }}
