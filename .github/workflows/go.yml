@@ -34,9 +34,8 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         script:
           pwd &&
-          ping ${{ secrets.SERVER_HOST }} &&
-          scp  -P ${{ secrets.SERVER_PORT }} ./nas_go ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/usr/nas_exe   &&
-          nohup /usr/nas_exe/nas_go > /dev/null 2>&1 &
+          ping ${{ secrets.SERVER_HOST }}
+
       
 
 
