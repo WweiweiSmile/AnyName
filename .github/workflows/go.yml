@@ -23,7 +23,7 @@ jobs:
     - name: 更新go依赖
       run:  pwd && cd Back && go mod download
     - name: 编译go程序
-      run:  cd Back && go build -o nas_go
+      run:  cd Back && GOOS=linux GOARCH=amd64 go build -o nas_go
     - name: 上传执行文件
       uses: appleboy/scp-action@v0.1.7
       with:
@@ -31,7 +31,7 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
         source: "./Back/nas_go"
-        target: "/usr/nas_exe/nas_go"
+        target: "/usr/nas_exe"
     - name: 部署
       uses: appleboy/ssh-action@v1.2.0
       with:
