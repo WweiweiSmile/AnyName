@@ -45,8 +45,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            nohup  /usr/nas_exe/Back/nas_go  >go_log.out 2>go_err_log.out  &
-
+            whoami
+            ls
       
 
 
