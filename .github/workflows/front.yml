@@ -16,16 +16,22 @@ jobs:
       - name: 读取仓库内容
         uses: actions/checkout@v4
 
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.4.0
+
       - name: 设置node版本为 18.16.0
         uses: actions/setup-node@v4
         with:
           node-version: 18.16.0
+          cache: pnpm
 
       - name: 下载依赖
-        run: cd front && pwd && npm install
+        run: cd front && pwd && pnpm install
 
       - name: 构建项目
-        run: cd front && pwd && npm build
+        run: cd front && pwd && pnpm build
 
       - name: 上传构建目录
         uses: appleboy/scp-action@v0.1.7
