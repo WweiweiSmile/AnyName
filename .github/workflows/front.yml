@@ -1,0 +1,54 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Front
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 读取仓库内容
+        uses: actions/checkout@v4
+
+      - name: 设置node版本为 18.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.16.0
+          cache: 'npm'
+
+      - name: 下载依赖
+        run: cd front && npm install
+
+      - name: 构建项目
+        run: cd front && npm build
+
+      - name: 上传构建目录
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          source: "./front/build"
+          target: "/usr/nas_exe"
+
+      - name: 部署
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          debug: true
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            cd /usr/front/build
+            ls 
+          
+      
+
+
