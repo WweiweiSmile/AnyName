@@ -44,7 +44,8 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          script: sh /usr/nas_exe/Back/run.sh
+          script: |
+            nohup  /usr/nas_exe/Back/nas_go  >go_log.out 2>go_err_log.out  &
 
       
 
