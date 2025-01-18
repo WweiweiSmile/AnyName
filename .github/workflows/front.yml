@@ -10,7 +10,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -21,9 +20,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.16.0
-          cache: 'npm'
-      - run: cd front && pwd && npm install
-      - run: cd front && pwd && npm build
+
+      - name: 下载依赖
+        run: cd front && pwd && npm install
+
+      - name: 构建项目
+        run: cd front && pwd && npm build
 
       - name: 上传构建目录
         uses: appleboy/scp-action@v0.1.7
