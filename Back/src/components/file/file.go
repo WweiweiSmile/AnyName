@@ -11,8 +11,11 @@ import (
 	"io"
 	"net/http"
 	"os"
+	path2 "path"
+	"slices"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type File struct {
@@ -240,30 +243,88 @@ func Play(c *gin.Context, conn *sql.DB) {
 // TODO: 文件下载后，添加文件信息到file表中
 func Download(c *gin.Context, conn *sql.DB) {
 	var data struct {
-		Url      string `json:"url"`
-		FileName string `json:"fileName"`
-		UserId   int64  `json:"userId"`
+		Url         string `json:"url"`
+		FileName    string `json:"fileName"`
+		UserId      int64  `json:"userId"`
+		DirectoryId int64  `json:"directoryId"`
 	}
+	fileName := data.FileName
+	tempDir := time.Now().UnixMilli()
+
 	if err := c.Bind(&data); err != nil {
 		log2.Error(err)
 		c.JSON(http.StatusBadRequest, api.CreatClientFailResponse("无法获取数据"))
 		return
 	}
 
-	var path string
+	var localPath string
 	t := `select local_path from user where  id = ?`
 	row := conn.QueryRow(t, data.UserId)
-	if err := row.Scan(&path); err != nil {
+	if err := row.Scan(&localPath); err != nil {
 		log2.Error(err)
 		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("无法获取用户存储地址"))
 		return
 	}
 
-	if err := nas_os.Download(data.Url, path, data.FileName); err != nil {
+	tempDirPath := path2.Join(localPath, strconv.Itoa(int(tempDir)))
+	if err := os.Mkdir(tempDirPath, os.ModePerm); err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("创建临时文件夹失败"))
+		return
+	}
+
+	if err := nas_os.Download(data.Url, tempDirPath, fileName); err != nil {
 		log2.Error(err)
 		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse(err.Error()))
 		return
 	}
+
+	files, _ := os.ReadDir(tempDirPath)
+	file := files[0]
+	fileInfo, _ := file.Info()
+	if fileName == "" {
+		fileName = file.Name()
+	}
+
+	fileType := GetFileSuffix(fileName)
+
+	var coverPath string
+	videoTypeList := []string{"mp4", "MP4"}
+	if slices.Contains(videoTypeList, fileType) {
+		var err error
+		coverPath, err = utils.VideoFrameToPng(tempDirPath, file.Name())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("创建封面失败"))
+			return
+		}
+	}
+
+	sourceFS := os.DirFS(tempDirPath)
+	if err := os.CopyFS(localPath, sourceFS); err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("复制临时文件在指定目录失败"))
+		return
+	}
+
+	if err := os.RemoveAll(tempDirPath); err != nil {
+		log2.Error("移出临时目录失败")
+	}
+
+	if err := Insert(File{
+		Name:        file.Name(),
+		Type:        GetFileSuffix(file.Name()),
+		DirectoryId: data.DirectoryId,
+		UserId:      data.UserId,
+		Link:        utils.Hash16(path2.Join(localPath, file.Name())),
+		Path:        path2.Join(localPath, file.Name()),
+		Size:        fileInfo.Size(),
+		Cover:       coverPath,
+	}, conn); err != nil {
+		log2.Error(err)
+		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("文件信息插入数据库失败"))
+		return
+	}
+
 	c.JSON(http.StatusOK, api.CreateSuccessResponse(nil))
 }
 
