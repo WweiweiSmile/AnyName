@@ -128,11 +128,32 @@ export const useCreateDir = () => {
   );
 };
 
+/**
+ * 创建文件夹
+ */
+export const useDownload = () => {
+  return useRequest(
+    async (value:{
+      url: string;
+      directoryId: number;
+      fileName: string;
+      userId: number;
+    }) => {
+      const res = await http.post(`/api/file/download`, value);
+      return res.data;
+    },
+    {
+      manual: true,
+    },
+  );
+};
+
 const fileApi = {
   useUpload,
   useList,
   useDelete,
   useUpdate,
+  useDownload
 };
 
 export default fileApi;

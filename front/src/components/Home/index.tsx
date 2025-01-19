@@ -7,6 +7,7 @@ import directoryApi, {Directory} from '../../apis/directory';
 import FileItem from '../file_list/fileItem';
 import FileUpload from '../file_list/fileUpload';
 import fileApi, {FileType} from '../../apis/file';
+import AddDownloadTaskModal from './add_download_task_modal/AddDownloadTaskModal';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Home: React.FC = () => {
   const [createDirVisible, setCreateDirVisible] = useState<boolean>(false);
   const [editDirVisible, setEditDirVisible] = useState<boolean>(false);
   const [updateFileVisible, setUpdateFileVisible] = useState<boolean>(false);
+  const [addDownloadTaskModalVisible, setAddDownloadTaskModalVisible] = useState(false);
   const [dir, setDir] = useState<Directory | null>(null);
   const [file, setFile] = useState<FileType | null>(null);
   const {run: runList, data: directoryList, refresh: refreshList} = directoryApi.useList();
@@ -30,6 +32,7 @@ const Home: React.FC = () => {
   const {run: runListFile, data: fileList, refresh: refreshListFile} = fileApi.useList();
   const {runAsync: runUpdateFile} = fileApi.useUpdate();
   const {runAsync: runDeleteFile} = fileApi.useDelete();
+  const {runAsync: runDownload} = fileApi.useDownload();
 
   useEffect(() => {
     runList(parentDirs[parentDirs.length - 1].id, user?.id!);
@@ -145,6 +148,9 @@ const Home: React.FC = () => {
         <Col>
           <Button onClick={openCreateDirModal}>新建目录</Button>
         </Col>
+        <Col>
+          <Button onClick={() => setAddDownloadTaskModalVisible(true)}>远程下载</Button>
+        </Col>
         <FileUpload directoryId={parentDirs[parentDirs.length - 1].id} afterUpload={refreshListFile}></FileUpload>
       </Row>
 
@@ -188,6 +194,22 @@ const Home: React.FC = () => {
       <Modal title="编辑文件" open={updateFileVisible} onCancel={closeUpdateFileModal} onOk={updateFile}>
         <Input placeholder="请输入文件名" value={file?.name} onChange={(v) => updateFileName(v.target.value)}/>
       </Modal>
+
+      <AddDownloadTaskModal open={addDownloadTaskModalVisible} onOk={async (value) => {
+        try {
+          await runDownload({
+            url: value.url,
+            userId: user?.id!,
+            directoryId: parentDirs[parentDirs.length - 1].id,
+            fileName: value.fileName,
+          });
+          message.success('下载完成');
+          setAddDownloadTaskModalVisible(false);
+        } catch (error) {
+          console.error(error);
+        }
+      }}
+                            onCancel={() => setAddDownloadTaskModalVisible(false)}/>
     </Content>
   );
 };
