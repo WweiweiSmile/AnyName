@@ -3,6 +3,7 @@ package main
 import (
 	"Back/src/components/auth"
 	"Back/src/components/directory"
+	"Back/src/components/door_password"
 	"Back/src/components/file"
 	"Back/src/components/nas_os"
 	"Back/src/components/openai"
@@ -67,6 +68,11 @@ func main() {
 			file.Upload(context, db.Conn)
 		})
 		osRoutes.POST("/CreateDir", nas_os.CreateDir)
+	}
+
+	doorPasswordRoutes := s.Group("/api/doorPassword")
+	{
+		doorPasswordRoutes.GET("/get", door_password.GetDoorPassword)
 	}
 
 	s.POST("/api/videoCover", videoplay.CreateVideoCover)
