@@ -8,6 +8,7 @@ import Index from "../components/index";
 import OpenAi from "../components/openai";
 import CacheComponent from "../components/Cache/CacheComponent";
 import CacheContainer from "../components/Cache/CacheContainer";
+import DoorPassword from '../components/door_password';
 // const FileUpload = React.lazy(() => import("../components/FileList/index"));
 
 const routes: RouteObject[] = [
@@ -43,6 +44,10 @@ const routes: RouteObject[] = [
         path: "openai",
         element: <OpenAi></OpenAi>,
       },
+      {
+        path:"doorPassword",
+        element: <DoorPassword />
+      }
     ],
   },
 
