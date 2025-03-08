@@ -70,7 +70,7 @@ func main() {
 		osRoutes.POST("/CreateDir", nas_os.CreateDir)
 	}
 
-	doorPasswordRoutes := s.Group("/api/doorPassword")
+	doorPasswordRoutes := s.Group("/api/door_password")
 	{
 		doorPasswordRoutes.GET("/get", door_password.GetDoorPassword)
 	}
