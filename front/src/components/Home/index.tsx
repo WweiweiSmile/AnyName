@@ -143,6 +143,9 @@ const Home: React.FC = () => {
           <Button onClick={() => {navigate('/login');}}>登陆页面</Button>
         </Col>
         <Col>
+          <Button onClick={() => {navigate("/door_password")}}>查看密码</Button>
+        </Col>
+        <Col>
           <Button onClick={logout}>登出页面</Button>
         </Col>
         <Col>

@@ -1,6 +1,5 @@
 import {useRequest} from 'ahooks';
-import {DefaultResponse, http, ListResponse} from './index';
-
+import {DefaultResponse, http} from './index';
 
 /**
  * 获取开门密码
@@ -22,9 +21,8 @@ const useGet = () => {
   );
 };
 
-
-const  DoorPasswordApi = {
+const DoorPasswordApi = {
   useGet: useGet,
-}
+};
 
 export default DoorPasswordApi;

@@ -3,10 +3,9 @@ import DoorPasswordApi from '../../apis/door_password';
 import {Button} from 'antd';
 
 const DoorPassword = () => {
-  const {run, data, refresh} = DoorPasswordApi.useGet();
-
+  const {run, data,refresh} = DoorPasswordApi.useGet();
   useEffect(() => {
-    run();
+    run()
   }, []);
 
   return <>

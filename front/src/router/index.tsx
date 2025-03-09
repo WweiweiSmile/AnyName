@@ -45,7 +45,7 @@ const routes: RouteObject[] = [
         element: <OpenAi></OpenAi>,
       },
       {
-        path:"doorPassword",
+        path:"door_password",
         element: <DoorPassword />
       }
     ],
