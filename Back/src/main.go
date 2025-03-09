@@ -21,7 +21,7 @@ func main() {
 	userRoutes := s.Group("/api/user")
 	{
 		userRoutes.POST("/login", user.Login)
-		userRoutes.POST("/create", user.CrateUser)
+		userRoutes.POST("/register", user.Register)
 		userRoutes.PUT("/modifyName", user.ModifyName)
 		userRoutes.PUT("/modifyPassword", user.ModifyPassword)
 	}

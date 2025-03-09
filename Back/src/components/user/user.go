@@ -4,7 +4,6 @@ import (
 	"Back/src/db"
 	"github.com/gin-gonic/gin"
 	log2 "github.com/labstack/gommon/log"
-	"log"
 	"net/http"
 	"time"
 )
@@ -20,17 +19,18 @@ type User struct {
 	UpdateTime time.Time `json:"updateIme"`
 }
 
-func CrateUser(c *gin.Context) {
+func Register(c *gin.Context) {
 	var user User
 	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "未能正确解析用户信息"})
 		return
 	}
 
-	t := `insert into user (name,username,password,avatar) values (?,?,?,?)`
-	if _, err := db.Conn.Query(t, user.Name, user.Username, user.Password, user.Avatar); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "用户注册失败"})
-		log.Fatal(err)
+	t := `INSERT INTO user (name,username,password,avatar) values (?,?,?,?)`
+
+	if _, err := db.Conn.Exec(t, user.Name, user.Username, user.Password, user.Avatar); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "用户注册失败"})
+		log2.Error(err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "用户注册成功"})

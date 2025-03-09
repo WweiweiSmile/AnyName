@@ -1,19 +1,28 @@
-import React from "react";
-import { createBrowserRouter, RouteObject } from "react-router-dom";
-import Login from "../components/Login";
-import VideoPlay from "../components/videoPlay";
-import FileUpload from "../components/file_list";
-import Home from "../components/Home";
-import Index from "../components/index";
-import OpenAi from "../components/openai";
-import CacheComponent from "../components/Cache/CacheComponent";
-import CacheContainer from "../components/Cache/CacheContainer";
+import React from 'react';
+import {createBrowserRouter, RouteObject} from 'react-router-dom';
+import Login from '../components/Login';
+import VideoPlay from '../components/videoPlay';
+import FileUpload from '../components/file_list';
+import Home from '../components/Home';
+import Index from '../components/index';
+import OpenAi from '../components/openai';
+import CacheComponent from '../components/Cache/CacheComponent';
+import CacheContainer from '../components/Cache/CacheContainer';
 import DoorPassword from '../components/door_password';
+import Register from '../components/register';
 // const FileUpload = React.lazy(() => import("../components/FileList/index"));
 
 const routes: RouteObject[] = [
   {
-    path: "/",
+    path: '/register',
+    element: <Register/>,
+  },
+  {
+    path: '/login',
+    element: <Login/>,
+  },
+  {
+    path: '/',
     element: (
       <CacheContainer>
         <Index></Index>
@@ -21,39 +30,34 @@ const routes: RouteObject[] = [
     ),
     children: [
       {
-        path: "home",
-        element: <Home />,
+        path: 'home',
+        element: <Home/>,
       },
       {
-        path: "fileList",
+        path: 'fileList',
         element: (
           <>
-            <CacheComponent onlyKey={"fileList"}>
-              <FileUpload />
+            <CacheComponent onlyKey={'fileList'}>
+              <FileUpload/>
             </CacheComponent>
           </>
         ),
       },
       {
-        path: "videoPlay/:link",
+        path: 'videoPlay/:link',
         element: (
-          <VideoPlay open={true} onClose={() => {}} src={""}></VideoPlay>
+          <VideoPlay open={true} onClose={() => {}} src={''}></VideoPlay>
         ),
       },
       {
-        path: "openai",
+        path: 'openai',
         element: <OpenAi></OpenAi>,
       },
       {
-        path:"door_password",
-        element: <DoorPassword />
-      }
+        path: 'door_password',
+        element: <DoorPassword/>,
+      },
     ],
-  },
-
-  {
-    path: "/login",
-    element: <Login />,
   },
 ];
 const router = createBrowserRouter(routes);
