@@ -14,10 +14,8 @@ export const useLogin =  () => {
         );
         return res.data.data;
       }catch (err){
-        console.error(err);
-        return null
+        throw err
       }
-
     },
     {
       manual: true,
@@ -41,16 +39,12 @@ export const useRegister =  () => {
         );
         return res.data.data;
       }catch (err){
-        console.error(err);
-        return null
+        throw err
       }
 
     },
     {
       manual: true,
-      onError: (err) => {
-        console.log(err);
-      }
     }
   );
 }

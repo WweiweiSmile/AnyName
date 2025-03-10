@@ -10,7 +10,7 @@ const Register = () => {
     password: '',
   });
 
-  const {runAsync} = authApi.useRegister()
+  const {runAsync,data} = authApi.useRegister()
 
   const register = async () => {
     try{

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"Back/src/components/api"
 	"Back/src/db"
 	"github.com/gin-gonic/gin"
 	log2 "github.com/labstack/gommon/log"
@@ -26,14 +27,29 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	t := `INSERT INTO user (name,username,password,avatar) values (?,?,?,?)`
+	// 是否已存在
+	var count int
+	t := `SELECT COUNT(*) from user where username = ?`
+	err := db.Conn.QueryRow(t, user.Username).Scan(&count)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, api.CreatServerFailResponse("用户注册失败"))
+		log2.Error(err)
+		return
+	}
+	if count > 0 {
+		c.JSON(http.StatusBadRequest, api.CreatClientFailResponse("该用户名已存在"))
+		return
+	}
+
+	// 添加用户信息
+	t = `INSERT INTO user (name,username,password,avatar) values (?,?,?,?)`
 
 	if _, err := db.Conn.Exec(t, user.Name, user.Username, user.Password, user.Avatar); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "用户注册失败"})
 		log2.Error(err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "用户注册成功"})
+	c.JSON(http.StatusOK, api.CreateSuccessResponse(""))
 }
 
 func Login(c *gin.Context) {
