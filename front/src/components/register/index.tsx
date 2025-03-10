@@ -10,21 +10,21 @@ const Register = () => {
     password: '',
   });
 
-  const {runAsync,data} = authApi.useRegister()
+  const {runAsync} = authApi.useRegister();
 
   const register = async () => {
-    try{
-      await runAsync(user.name,user.username,user.password)
-      message.success('用户注册成功')
-    }catch (err){
-      console.log(err)
+    try {
+      await runAsync(user.name, user.username, user.password);
+      message.success('用户注册成功');
+    } catch (err) {
+      console.log(err);
     }
 
-  }
+  };
 
   const registerEnabled = useMemo(() => {
     return user.name && user.username && user.password && user.username.length >= 6 && user.password.length >= 6;
-  },[user.name,user.username,user.password])
+  }, [user.name, user.username, user.password]);
 
   return <>
     <div className="w-full h-screen flex items-center justify-center">
@@ -32,7 +32,7 @@ const Register = () => {
         <Input placeholder="请输入名称" onChange={(e) => setUser({...user, name: e.target.value})}/>
         <Input placeholder="请输入用户名" onChange={(e) => setUser({...user, username: e.target.value})}/>
         <Input.Password placeholder="请输入密码" onChange={(e) => setUser({...user, password: e.target.value})}/>
-        <div className="text-center"><Button disabled={!registerEnabled}  onClick={register}>注册</Button></div>
+        <div className="text-center"><Button disabled={!registerEnabled} onClick={register}>注册</Button></div>
 
       </div>
     </div>
