@@ -28,7 +28,7 @@ const Register = () => {
 
   return <>
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-80 h-80 flex flex-col gap-2">
+      <div className="w-80  flex flex-col gap-2 p-10  bg-gray-100  rounded-lg">
         <Input placeholder="请输入名称" onChange={(e) => setUser({...user, name: e.target.value})}/>
         <Input placeholder="请输入用户名" onChange={(e) => setUser({...user, username: e.target.value})}/>
         <Input.Password placeholder="请输入密码" onChange={(e) => setUser({...user, password: e.target.value})}/>
