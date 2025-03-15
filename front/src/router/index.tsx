@@ -10,6 +10,7 @@ import CacheComponent from '../components/Cache/CacheComponent';
 import CacheContainer from '../components/Cache/CacheContainer';
 import DoorPassword from '../components/door_password';
 import Register from '../components/register';
+import WithAuth from '../context/auth';
 
 const routes: RouteObject[] = [
   {
@@ -23,11 +24,11 @@ const routes: RouteObject[] = [
   {
     path: '/',
     element: (
-      // <WithAuth>
+      <WithAuth>
         <CacheContainer>
           <Index></Index>
         </CacheContainer>
-      // </WithAuth>
+      </WithAuth>
     ),
     children: [
       {

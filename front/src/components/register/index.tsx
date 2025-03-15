@@ -33,7 +33,6 @@ const Register = () => {
         <Input placeholder="请输入用户名" onChange={(e) => setUser({...user, username: e.target.value})}/>
         <Input.Password placeholder="请输入密码" onChange={(e) => setUser({...user, password: e.target.value})}/>
         <div className="text-center"><Button disabled={!registerEnabled} onClick={register}>注册</Button></div>
-
       </div>
     </div>
   </>;

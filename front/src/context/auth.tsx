@@ -22,29 +22,33 @@ type WithAuthProps = {
   children: ReactNode;
 };
 const WithAuth: React.FC<WithAuthProps> = ({children}) => {
-  const [local, setLocal] = useLocalStorageState<User | null>('user');
-  const [user, setUser] = useState<User | null>(local);
+  const [localUser, setLocalUser] = useLocalStorageState<User | null>('user');
+  const [user, setUser] = useState<User | null>(localUser);
+
+  console.log('local user->',localUser);
+
   // 如果没有权限,并且不是登陆页面, 跳转到 登陆页面
   useEffect(() => {
     if (
-      !!local &&
+      !localUser &&
       window.location.pathname !== '/login'
     ) {
-      window.location.href = '/login';
+      // window.location.href = '/login';
+      console.log('jump to login');
     }
-  }, [local]);
+  }, [localUser]);
 
   // 权限值
   const authValue: AuthContextType = {
     user: user,
     setUser: (user) => {
       setUser(user);
-      setLocal(user);
+      setLocalUser(user);
     },
     logout: () => {
       const defaultUser: User | null = null;
       setUser(defaultUser);
-      setLocal(defaultUser);
+      setLocalUser(defaultUser);
       message.success('退出成功！');
       window.location.reload();
     },
