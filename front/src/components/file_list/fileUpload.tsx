@@ -11,8 +11,8 @@ type FileUploadProps = {
 
 const FileUpload: React.FC<FileUploadProps> = (props) => {
   const {directoryId, afterUpload} = props;
-  const {runAsync: runFileUpload} = fileApi.useUpload();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const {runAsync: runFileUpload} = fileApi.useUpload();
   const {user} = useAuthContext();
 
   // TODO: 上传多个文件

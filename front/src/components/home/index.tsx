@@ -5,9 +5,9 @@ import {useNavigate} from 'react-router-dom';
 import {useAuthContext} from '../../hooks';
 import directoryApi, {Directory} from '../../apis/directory';
 import FileItem from '../file_list/fileItem';
-import FileUpload from '../file_list/fileUpload';
 import fileApi, {FileType} from '../../apis/file';
 import AddDownloadTaskModal from './add_download_task_modal/AddDownloadTaskModal';
+import UploadList from '../upload_list';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const Home: React.FC = () => {
   const [createDirVisible, setCreateDirVisible] = useState<boolean>(false);
   const [editDirVisible, setEditDirVisible] = useState<boolean>(false);
   const [updateFileVisible, setUpdateFileVisible] = useState<boolean>(false);
+  const [uploadVisible, setUploadVisible] = useState<boolean>(false);
   const [addDownloadTaskModalVisible, setAddDownloadTaskModalVisible] = useState(false);
   const [dir, setDir] = useState<Directory | null>(null);
   const [file, setFile] = useState<FileType | null>(null);
@@ -33,6 +34,7 @@ const Home: React.FC = () => {
   const {runAsync: runUpdateFile} = fileApi.useUpdate();
   const {runAsync: runDeleteFile} = fileApi.useDelete();
   const {runAsync: runDownload} = fileApi.useDownload();
+  const directoryId = parentDirs[parentDirs.length - 1].id;
 
   useEffect(() => {
     runList(parentDirs[parentDirs.length - 1].id, user?.id!);
@@ -143,7 +145,7 @@ const Home: React.FC = () => {
           <Button onClick={() => {navigate('/login');}}>登陆页面</Button>
         </Col>
         <Col>
-          <Button onClick={() => {navigate("/door_password")}}>查看密码</Button>
+          <Button onClick={() => {navigate('/door_password');}}>查看密码</Button>
         </Col>
         <Col>
           <Button onClick={logout}>登出页面</Button>
@@ -154,7 +156,9 @@ const Home: React.FC = () => {
         <Col>
           <Button onClick={() => setAddDownloadTaskModalVisible(true)}>远程下载</Button>
         </Col>
-        <FileUpload directoryId={parentDirs[parentDirs.length - 1].id} afterUpload={refreshListFile}></FileUpload>
+        <Col>
+          <Button onClick={() => setUploadVisible(true)}>上传列表</Button>
+        </Col>
       </Row>
 
       <Row>
@@ -197,6 +201,8 @@ const Home: React.FC = () => {
       <Modal title="编辑文件" open={updateFileVisible} onCancel={closeUpdateFileModal} onOk={updateFile}>
         <Input placeholder="请输入文件名" value={file?.name} onChange={(v) => updateFileName(v.target.value)}/>
       </Modal>
+
+      <UploadList open={uploadVisible} onClose={() => setUploadVisible(false)} directoryId={directoryId} afterUpload={refreshListFile}></UploadList>
 
       <AddDownloadTaskModal open={addDownloadTaskModalVisible} onOk={async (value) => {
         try {
