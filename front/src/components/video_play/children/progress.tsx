@@ -4,7 +4,7 @@ import { VideoActions, VideoState } from "react-video-renderer";
 
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-import "./Progress.scss";
+import "./progress.scss";
 interface VideoProgressProps {
   actions: VideoActions;
   state: VideoState;

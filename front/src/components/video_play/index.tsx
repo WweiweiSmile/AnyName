@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import Video from 'react-video-renderer';
 import {Button, Row, Space} from 'antd';
-import VideoProgress from './children/Progress';
+import VideoProgress from './children/progress';
 import './index.scss';
 import {useParams} from 'react-router-dom';
 import {downloadFile} from '../../utils/utils';
@@ -19,7 +19,7 @@ const VideoPlay: React.FC<VideoPlayPropsType> = (props) => {
   const {link} = useParams();
   const timouter = useRef<NodeJS.Timeout[]>([]);
   const [pause, setPause] = useState(true);
-  
+
   const src = `${process.env.REACT_APP_SERVER}/api/file/play/${link}?type=video`;
 
   return (

@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {Button, Input, message} from 'antd';
-import {User} from '../Login';
+import {User} from '../login';
 import authApi from '../../apis/auth';
 
 const Register = () => {

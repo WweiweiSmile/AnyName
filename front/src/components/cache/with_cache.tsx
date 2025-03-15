@@ -24,7 +24,7 @@ export const CacheContainerContext = createContext<_CacheContainerContext>({
   },
 });
 
-const CacheContainer: React.FC<CacheContainerProps> = (props) => {
+const WithCache: React.FC<CacheContainerProps> = (props) => {
   const { children } = props;
   const [cacheElement, setCacheElement] = useState<
     Record<string, CacheComponent>
@@ -109,4 +109,4 @@ const CacheContainer: React.FC<CacheContainerProps> = (props) => {
   );
 };
 
-export default CacheContainer;
+export default WithCache;

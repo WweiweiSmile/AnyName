@@ -1,7 +1,7 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import {useLocalStorageState} from 'ahooks';
 import {message} from 'antd';
-import {User} from '../components/Login';
+import {User} from '../components/login';
 
 export type AuthContextType = {
   user: User | null;

@@ -1,16 +1,15 @@
 import React from 'react';
 import {createBrowserRouter, RouteObject} from 'react-router-dom';
-import Login from '../components/Login';
-import VideoPlay from '../components/videoPlay';
+import Login from '../components/login';
+import VideoPlay from '../components/video_play';
 import FileUpload from '../components/file_list';
-import Home from '../components/Home';
+import Home from '../components/home';
 import Index from '../components/index';
 import OpenAi from '../components/openai';
-import CacheComponent from '../components/Cache/CacheComponent';
-import CacheContainer from '../components/Cache/CacheContainer';
+import Cache from '../components/cache/cache';
+import WithCache from '../components/cache/with_cache';
 import DoorPassword from '../components/door_password';
 import Register from '../components/register';
-import WithAuth from '../context/auth';
 
 const routes: RouteObject[] = [
   {
@@ -24,9 +23,9 @@ const routes: RouteObject[] = [
   {
     path: '/',
     element: (
-        <CacheContainer>
-          <Index></Index>
-        </CacheContainer>
+      <WithCache>
+        <Index></Index>
+      </WithCache>
     ),
     children: [
       {
@@ -37,9 +36,9 @@ const routes: RouteObject[] = [
         path: 'fileList',
         element: (
           <>
-            <CacheComponent onlyKey={'fileList'}>
+            <Cache onlyKey={'fileList'}>
               <FileUpload/>
-            </CacheComponent>
+            </Cache>
           </>
         ),
       },

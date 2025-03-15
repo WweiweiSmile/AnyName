@@ -1,24 +1,24 @@
-import React, { Key, ReactNode, useContext, useEffect, useRef } from "react";
-import { CacheContainerContext } from "./CacheContainer";
+import React, {Key, ReactNode, useContext, useEffect, useRef} from 'react';
+import {CacheContainerContext} from './with_cache';
 
 interface CacheComponentProps {
   children: ReactNode;
   onlyKey: Key;
 }
 
-const CacheComponent: React.FC<CacheComponentProps> = (props) => {
-  const { children, onlyKey } = props;
-  const { state, appendElement } = useContext(CacheContainerContext);
+const Cache: React.FC<CacheComponentProps> = (props) => {
+  const {children, onlyKey} = props;
+  const {state, appendElement} = useContext(CacheContainerContext);
 
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const cacheContent = state[onlyKey];
     // 如果没有 状态 或者 缓存的组件被销毁了，创建新的缓存组件
-    if (!cacheContent?.status || cacheContent?.status === "destory") {
+    if (!cacheContent?.status || cacheContent?.status === 'destory') {
       appendElement(onlyKey, children);
     }
     // 如果组件已经被缓存了，直接使用
-    if (ref.current && cacheContent?.status === "created") {
+    if (ref.current && cacheContent?.status === 'created') {
       const doms = [...cacheContent.doms];
       ref.current.append(...doms);
     }
@@ -27,4 +27,4 @@ const CacheComponent: React.FC<CacheComponentProps> = (props) => {
   return <div id={onlyKey.toString()} ref={ref}></div>;
 };
 
-export default CacheComponent;
+export default Cache;
