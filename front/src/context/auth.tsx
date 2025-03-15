@@ -11,12 +11,15 @@ export type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
-  logout: () => {},
-  setUser: () => {},
+  logout: () => {
+    console.error('logout函数未在 AuthContext 范围内，请注意检查');
+  },
+  setUser: () => {
+    console.error('setUser函数未在 AuthContext 范围内，请注意检查');
+  },
 });
 
 export const useAuthContext = () => useContext(AuthContext);
-
 
 type WithAuthProps = {
   children: ReactNode;
@@ -25,18 +28,12 @@ const WithAuth: React.FC<WithAuthProps> = ({children}) => {
   const [localUser, setLocalUser] = useLocalStorageState<User | null>('user');
   const [user, setUser] = useState<User | null>(localUser);
 
-  console.log('local user->',localUser);
-
   // 如果没有权限,并且不是登陆页面, 跳转到 登陆页面
   useEffect(() => {
-    if (
-      !localUser &&
-      window.location.pathname !== '/login'
-    ) {
-      // window.location.href = '/login';
-      console.log('jump to login');
+    if (!user && window.location.pathname !== '/login') {
+      window.location.href = '/login';
     }
-  }, [localUser]);
+  }, [user]);
 
   // 权限值
   const authValue: AuthContextType = {

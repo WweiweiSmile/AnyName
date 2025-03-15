@@ -24,11 +24,9 @@ const routes: RouteObject[] = [
   {
     path: '/',
     element: (
-      <WithAuth>
         <CacheContainer>
           <Index></Index>
         </CacheContainer>
-      </WithAuth>
     ),
     children: [
       {
