@@ -7,6 +7,7 @@ export type AuthContextType = {
   user: User | null;
   setUser: (user: User | null) => void;
   logout: VoidFunction;
+  hasAuth: () => boolean
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -16,6 +17,10 @@ export const AuthContext = createContext<AuthContextType>({
   },
   setUser: () => {
     console.error('setUser函数未在 AuthContext 范围内，请注意检查');
+  },
+  hasAuth: () => {
+    console.error('hasAuth函数未在 AuthContext 范围内，请注意检查');
+    return false;
   },
 });
 
@@ -48,6 +53,9 @@ const WithAuth: React.FC<WithAuthProps> = ({children}) => {
       setLocalUser(defaultUser);
       message.success('退出成功！');
       window.location.reload();
+    },
+    hasAuth: () => {
+      return !!user;
     },
   };
 
