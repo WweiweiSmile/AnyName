@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import Video from 'react-video-renderer';
 import {Button, Row, Space} from 'antd';
 import VideoProgress from './children/progress';
-import './index.scss';
+import './video_play.scss';
 import {useParams} from 'react-router-dom';
 import {downloadFile} from '../../utils/utils';
 import {PauseCircleOutlined} from '@ant-design/icons';

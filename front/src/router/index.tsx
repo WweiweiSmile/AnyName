@@ -6,10 +6,9 @@ import FileUpload from '../components/file_list';
 import Home from '../components/home';
 import Index from '../components/index';
 import OpenAi from '../components/openai';
-import Cache from '../components/cache/cache';
-import WithCache from '../components/cache/with_cache';
 import DoorPassword from '../components/door_password';
 import Register from '../components/register';
+import {WithCache, Cache} from '../components/cache';
 
 const routes: RouteObject[] = [
   {

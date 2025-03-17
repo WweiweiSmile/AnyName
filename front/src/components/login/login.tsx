@@ -4,14 +4,7 @@ import {useNavigate} from 'react-router-dom';
 import {useLogin} from '../../apis/auth';
 import {useAuthContext} from '../../hooks';
 
-export type User = {
-  id: number;
-  name: string;
-  username: string;
-  password: string;
-  avatar: string;
-  localPath: string
-};
+
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
