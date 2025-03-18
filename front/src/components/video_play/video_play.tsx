@@ -4,7 +4,7 @@ import {Button, Row, Space} from 'antd';
 import VideoProgress from './children/progress';
 import './video_play.scss';
 import {useParams} from 'react-router-dom';
-import {downloadFile} from '../../utils/utils';
+import {downloadFile} from '../../utils';
 import {PauseCircleOutlined} from '@ant-design/icons';
 
 type VideoPlayPropsType = {

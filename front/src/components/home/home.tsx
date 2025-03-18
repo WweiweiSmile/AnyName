@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuthContext} from '../../hooks';
 import directoryApi, {Directory} from '../../apis/directory';
-import FileItem from '../file_list/fileItem';
+import FileItem from '../file_list/file-item';
 import fileApi, {FileType} from '../../apis/file';
 import AddDownloadTaskModal from './add_download_task_modal/AddDownloadTaskModal';
 import UploadList from '../upload_list';

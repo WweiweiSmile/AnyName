@@ -4,6 +4,7 @@ import React from 'react';
 import {Directory} from '../../apis/directory';
 import Meta from 'antd/es/card/Meta';
 import {FileType} from '../../apis/file';
+import {DeleteConfirm} from '../../common/delte_confirm';
 
 const {Text} = Typography;
 
@@ -41,6 +42,8 @@ const FileItem: React.FC<FileItemProps> = (props) => {
     }
   };
 
+  const description = `你确定删除 ${name} ${isDir ? "目录" : "文件"}吗？`;
+
   return (
     <Col xs={12} xl={6} xxl={4} key={name}>
       <Card
@@ -51,16 +54,19 @@ const FileItem: React.FC<FileItemProps> = (props) => {
             onClick={getOnClick()}
           />,
           <EditOutlined onClick={onEdit}/>,
-          <DeleteOutlined onClick={onDelete}/>,
+          <DeleteConfirm onConfirm={onDelete} title={'删除'} description={description}>
+            <DeleteOutlined/>,
+          </DeleteConfirm>,
+
         ]}
       >
         <Meta
           title={
-          <div className="text-center">
-            <Text  ellipsis={{tooltip: name}}>
-              {name}
-            </Text>
-          </div>
+            <div className="text-center">
+              <Text ellipsis={{tooltip: name}}>
+                {name}
+              </Text>
+            </div>
 
           }
           // description={file?.size || 19000}
